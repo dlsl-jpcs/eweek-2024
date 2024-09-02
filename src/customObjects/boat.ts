@@ -4,6 +4,16 @@ import { Entity } from "../engine/engine";
 
 const gravity = 0.005;
 
+/**
+ * The markers that indicate the front and back of the boat.
+ * 
+ * This is used to calculate the angle of the boat.
+ * (The back and front of the boat may be at different heights, as the boat
+ * is in the water and the water has waves. We used the difference in height
+ * to calculate the angle of the boat)
+ * 
+ * @see {Boat#update}
+ */
 export class BoatMarker extends Entity {
     mesh: THREE.Object3D;
 
@@ -101,6 +111,11 @@ export class Boat extends Entity {
     }
 
     update(deltaTime: number): void {
+        this.updateGravity();
+        this.updateRotation();
+    }
+
+    updateGravity() {
         this.velocity.y -= gravity;
         this.mesh.position.add(this.velocity);
 
@@ -122,7 +137,12 @@ export class Boat extends Entity {
             this.mesh.position.y = intersect.point.y + 25;
             this.velocity.y = 0;
         }
+    }
 
+    /**
+     * Update the rotation of the boat based on the markers
+     */
+    updateRotation() {
         const boatFront = this.engine.findEntityByTag("boatFront") as BoatMarker;
         const boatBack = this.engine.findEntityByTag("boatBack") as BoatMarker;
 
@@ -142,13 +162,12 @@ export class Boat extends Entity {
         // rotate it slightly to make it look like it's leaning
         if (this.velocity.z < 0 && this.mesh.rotation.x > -0.3) {
             this.mesh.rotation.x -= 0.01;
-        } else if (this.velocity.z > 0) {
-            this.mesh.rotation.x = 0.3;
-        } else if (this.mesh.rotation.x < 0) {
+        } else if (this.velocity.z > 0 && this.mesh.rotation.x < 0.3) {
             this.mesh.rotation.x += 0.01;
+        } else if (this.mesh.rotation.x < 0) {
+            this.mesh.rotation.x += 0.001;
         } else if (this.mesh.rotation.x > 0) {
-            this.mesh.rotation.x -= 0.01;
+            this.mesh.rotation.x -= 0.001;
         }
-
     }
 }
