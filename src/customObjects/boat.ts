@@ -30,7 +30,7 @@ export class BoatMarker extends Entity {
             }),
         );
 
-        this.mesh.position.set(isFront ? -180 : -20, 0, 0);
+        this.mesh.position.set(isFront ? -140 : -50, 0, 0);
 
         this.object = this.mesh;
     }
@@ -86,9 +86,11 @@ export class Boat extends Entity {
         super("player");
 
         this.mesh = mesh;
-        this.mesh.scale.set(15,
-            15,
-            15);
+
+        const scale = 10;
+        this.mesh.scale.set(scale,
+            scale,
+            scale);
 
         this.object = this.mesh;
 
@@ -134,7 +136,7 @@ export class Boat extends Entity {
 
         if (intersectObjects.length > 0) {
             const intersect = intersectObjects[0];
-            this.mesh.position.y = intersect.point.y + 25;
+            this.mesh.position.y = intersect.point.y + 18;
             this.velocity.y = 0;
         }
     }
