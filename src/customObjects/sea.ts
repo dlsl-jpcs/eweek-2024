@@ -19,6 +19,7 @@ export type Wave = {
 export class Sea extends Entity {
     waves: Wave[];
     mesh: THREE.Mesh;
+
     constructor() {
         super("sea");
 

@@ -7,7 +7,7 @@ import {
 import './style.css';
 import Engine from './engine/engine';
 import { Sea } from './customObjects/sea';
-import { Boat } from './customObjects/boat';
+import { Boat, BoatMarker } from './customObjects/boat';
 import { setupLighting } from './customObjects/lights';
 import { Iceberg } from './customObjects/obstacle';
 
@@ -28,14 +28,17 @@ loader.load('/sailboat.glb', (gltf) => {
   engine.addEntity(boat);
 });
 
-let iceberg: Iceberg; 
+let iceberg: Iceberg;
 loader.load('./iceberg.glb', (gltf) => {
-    iceberg = new Iceberg(gltf.scene);
-    iceberg.mesh.position.y = -60;
-    iceberg.mesh.position.x = -300;
-    iceberg.mesh.position.z = 200;
-    engine.addEntity(iceberg); 
+  iceberg = new Iceberg(gltf.scene);
+  iceberg.mesh.position.y = -60;
+  iceberg.mesh.position.x = -300;
+  iceberg.mesh.position.z = 200;
+  engine.addEntity(iceberg);
 });
+
+engine.addEntity(new BoatMarker());
+engine.addEntity(new BoatMarker(true));
 
 setupLighting(engine);
 
