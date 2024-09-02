@@ -8,6 +8,8 @@ import { Entity } from "../engine/engine";
 export class Boat extends Entity {
     mesh: THREE.Object3D;
 
+
+    
     constructor(mesh: THREE.Object3D) {
         super("player");
 

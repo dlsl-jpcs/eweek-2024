@@ -9,6 +9,8 @@ import Engine from './engine/engine';
 import { Sea } from './customObjects/sea';
 import { Boat } from './customObjects/boat';
 import { setupLighting } from './customObjects/lights';
+import { Iceberg } from './customObjects/obstacle';
+
 
 const engine = new Engine();
 
@@ -24,6 +26,15 @@ loader.load('/sailboat.glb', (gltf) => {
   boat.mesh.position.y = 0;
   boat.mesh.position.x = -100;
   engine.addEntity(boat);
+});
+
+let iceberg: Iceberg; 
+loader.load('./iceberg.glb', (gltf) => {
+    iceberg = new Iceberg(gltf.scene);
+    iceberg.mesh.position.y = -60;
+    iceberg.mesh.position.x = -300;
+    iceberg.mesh.position.z = 200;
+    engine.addEntity(iceberg); 
 });
 
 setupLighting(engine);
