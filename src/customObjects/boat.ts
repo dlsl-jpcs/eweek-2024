@@ -9,7 +9,7 @@ export class Boat extends Entity {
     mesh: THREE.Object3D;
 
     constructor(mesh: THREE.Object3D) {
-        super();
+        super("player");
 
         this.mesh = mesh;
         this.mesh.scale.set(15,

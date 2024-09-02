@@ -6,9 +6,13 @@ import { Position, Size } from '../utils';
 export abstract class Entity {
 
     public object: THREE.Object3D;
+    public tag: string;
 
-    constructor() {
+
+
+    constructor(tag: string) {
         this.object = new THREE.Object3D();
+        this.tag = tag;
     }
 
     abstract update(deltaTime: number): void;
@@ -150,5 +154,9 @@ export default class Engine {
      */
     getCurrentScene() {
         return this.scene;
+    }
+
+    findEntityByTag(tag: string) {
+        return this.entities.find(entity => entity.tag === tag);
     }
 }

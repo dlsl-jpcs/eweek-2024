@@ -20,7 +20,7 @@ export class Sea extends Entity {
     waves: Wave[];
     mesh: THREE.Mesh;
     constructor() {
-        super();
+        super("sea");
 
         var geom = new THREE.CylinderGeometry(600,
             600,
