@@ -12,3 +12,7 @@ export function cartesianToIsometric(pos: Position) {
     tempPt.y = (pos.x + pos.y) / 2;
   	return tempPt;
 }
+
+export function randomIntRange(min: number, max: number) { 
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
