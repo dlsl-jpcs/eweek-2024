@@ -8,11 +8,16 @@ export abstract class Entity {
     public object: THREE.Object3D;
     public tag: string;
 
+    protected engine!: Engine;
 
 
     constructor(tag: string) {
         this.object = new THREE.Object3D();
         this.tag = tag;
+    }
+
+    setEngine(engine: Engine) {
+        this.engine = engine;
     }
 
     abstract update(deltaTime: number): void;
@@ -44,6 +49,7 @@ export default class Engine {
 
 
     addEntity(entity: Entity) {
+        entity.setEngine(this);
         this.entities.push(entity);
 
         this.scene.add(entity.object);

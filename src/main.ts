@@ -21,7 +21,7 @@ let loader = new GLTFLoader();
 let boat: Boat;
 loader.load('/sailboat.glb', (gltf) => {
   boat = new Boat(gltf.scene);
-  boat.mesh.position.y = 0;
+  boat.mesh.position.y = 100;
   boat.mesh.position.x = -100;
   engine.addEntity(boat);
 });
