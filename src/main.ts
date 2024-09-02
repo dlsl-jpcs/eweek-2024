@@ -1,20 +1,23 @@
-import Engine, { Entity } from './engine/engine'
 import './style.css'
 
+import Engine, {Entity} from './engine/engine'
+
 class Water extends Entity {
-  private y: number = 0;
+    constructor() {
+        super();
+        this.Size = {width: 500, height: window.innerWidth * 3};
+        this.Position = {x: 0, y: 0};
+    }
 
-  update(deltaTime: number) {
-    this.y += 0.01 * deltaTime;
-  }
+    update(deltaTime: number) {}
 
-  render(context: CanvasRenderingContext2D) {
-    context.fillStyle = 'blue';
-
-    context.fillRect(0, 0, window.innerWidth, window.innerHeight);
-  }
-
-
+  	render(context: CanvasRenderingContext2D) {
+    	context.fillStyle = 'lightblue';
+    	context.fillRect(
+        this.Position.x - (this.Size.width / 2),
+        this.Position.y - (this.Size.height / 2), this.Size.width,
+        this.Size.height);
+  	}
 }
 
 const engine = new Engine();
