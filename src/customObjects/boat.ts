@@ -137,5 +137,18 @@ export class Boat extends Entity {
 
         this.mesh.rotation.z = angle * 2;
 
+
+        // when moving left or right, face the direction of movement (using the velocity)
+        // rotate it slightly to make it look like it's leaning
+        if (this.velocity.z < 0 && this.mesh.rotation.x > -0.3) {
+            this.mesh.rotation.x -= 0.01;
+        } else if (this.velocity.z > 0) {
+            this.mesh.rotation.x = 0.3;
+        } else if (this.mesh.rotation.x < 0) {
+            this.mesh.rotation.x += 0.01;
+        } else if (this.mesh.rotation.x > 0) {
+            this.mesh.rotation.x -= 0.01;
+        }
+
     }
 }
