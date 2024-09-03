@@ -34,7 +34,8 @@ loader.load('./iceberg.glb', (gltf) => {
   iceberg.mesh.position.y = -60;
   iceberg.mesh.position.x = -300;
   iceberg.mesh.position.z = 200;
-  engine.addEntity(iceberg);
+  // disable this temporarily
+  // engine.addEntity(iceberg);
 });
 
 engine.addEntity(new BoatMarker());

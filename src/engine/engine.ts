@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import { Position, Size } from '../utils';
-
+import { gameLogic } from '../component/gameLogic';
 
 export abstract class Entity {
 
@@ -140,13 +140,13 @@ export default class Engine {
 
     gameLoop() {
         this.update(this.clock.getDelta());
-
         this.render();
 
         requestAnimationFrame(this.gameLoop.bind(this));
     }
 
     update(deltaTime: number) {
+        gameLogic.update(deltaTime);
         this.entities.forEach(entity => entity.update(deltaTime));
     }
 
