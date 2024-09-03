@@ -93,7 +93,9 @@ export class Boat extends Entity {
             scale);
 
         this.object = this.mesh;
+    }
 
+    override start(): void {
         // move boat left or right based on keypress
         window.addEventListener("keydown", (event) => {
             const key = event.key;
