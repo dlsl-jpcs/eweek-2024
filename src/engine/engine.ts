@@ -41,7 +41,15 @@ export abstract class Entity {
 
 
     /**
-     * Called when the entity is added to the scene
+     * Called when the entity is added to the scene, and the engine is set.
+     */
+    public awake() {
+
+    }
+
+
+    /**
+     * Called before the engine starts the game loop
      */
     public start() {
 
@@ -91,6 +99,8 @@ export default class Engine {
         entity.setEngine(this);
         this.entities.push(entity);
         this.scene.add(entity.object);
+
+        entity.awake();
     }
 
     /**
