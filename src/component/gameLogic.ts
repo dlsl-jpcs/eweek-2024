@@ -53,4 +53,6 @@ class GameLogic {
     }
 }
 
+// access gamelogic via here! wow a singleton?
+// we use singletons in javascript now yes yes? kidding.
 export const gameLogic = new GameLogic();
