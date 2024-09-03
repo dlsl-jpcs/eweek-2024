@@ -94,7 +94,6 @@ export default class Engine {
         this.init();
     }
 
-
     addEntity(entity: Entity) {
         entity.setEngine(this);
         this.entities.push(entity);
@@ -102,6 +101,7 @@ export default class Engine {
 
         entity.awake();
     }
+    
 
     /**
      * Initialize the scene, camera, renderer, and other properties
@@ -212,6 +212,10 @@ export default class Engine {
      */
     getCurrentScene() {
         return this.scene;
+    }
+
+    getCamera() {
+        return this.camera;
     }
 
     findEntityByTag(tag: string) {

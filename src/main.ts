@@ -10,7 +10,12 @@ import { Sea } from './customObjects/sea';
 import { Boat, BoatMarker } from './customObjects/boat';
 import { setupLighting } from './customObjects/lights';
 import { Iceberg } from './customObjects/obstacle';
+import { BoxGeometry, CircleGeometry, CylinderGeometry, Mesh, MeshBasicMaterial, PlaneGeometry, Sprite, SpriteMaterial, TextureLoader, Vector3 } from 'three';
+import { CSS2DObject } from 'three/examples/jsm/Addons.js';
 
+
+import * as THREE from 'three';
+import { screenToWorld } from './utils';
 
 const engine = new Engine();
 
@@ -42,10 +47,44 @@ loader.load('./iceberg.glb', (gltf) => {
 engine.addEntity(new BoatMarker());
 engine.addEntity(new BoatMarker(true));
 
+/// THINGS SUBJECT TO CLEANUP, I'LL PUT THEM HERE CAUSE I'M LAZY FOR NOW
+/// -- COFFEE
+
+/** mesh position guide */
+/** for x, negative means up, positive means down
+  *  for y, negative means down, positive means up
+  * for z, negative means right, positive means left 
+*/ 
+
+/*const geometry = new THREE.PlaneGeometry(100, 100); // Adjust size as needed
+const plane = new THREE.Mesh(geometry);
+plane.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Adjust color as needed
+plane.position.set(-450, 0, 0); 
+plane.scale.set(1, 1, 1); 
+
+// reverse camera rotation. is there an easier way to do this??
+plane.rotation.x = -Math.PI / 2; 
+plane.rotation.y = Math.PI / 6;*/
+
+ 
+//engine.getCurrentScene().add(plane);
+
+
+// an attempt for a ui?
+
+const w = document.getElementById('ui');
+
+/*const p = document.createElement('p');
+p.textContent = 'Hello three.js!';
+p.style.zIndex = '100';*/
+
+//w?.appendChild(p);
+
+
+
+/// ------ END OF COFFEE'S DIRTY ASS SPAGHETTI CODE ------
+
 setupLighting(engine);
 
 engine.start();
-
-
-
 

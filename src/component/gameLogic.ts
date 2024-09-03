@@ -20,7 +20,7 @@ class GameLogic {
     }
 
     init() {
-        
+      
     }
     
     update(deltaTime: number): void {

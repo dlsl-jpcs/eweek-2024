@@ -1,3 +1,5 @@
+import { Camera, Plane, Raycaster, Vector2, Vector3 } from "three";
+
 export class Position {
   	constructor(public x: number, public y: number) {}
 }
