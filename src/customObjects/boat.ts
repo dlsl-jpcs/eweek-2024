@@ -47,7 +47,10 @@ export class BoatMarker extends Entity {
             return;
         }
 
+        this.updateGravity();
+    }
 
+    updateGravity() {
         this.velocity.y -= gravity;
         this.mesh.position.add(this.velocity);
 
