@@ -16,10 +16,49 @@ export abstract class Entity {
         this.tag = tag;
     }
 
+    /**
+     * INTERNAL USE ONLY
+     * 
+     * this is called by the engine to bind the entity to the engine instance
+     * 
+     * @param engine the engine instance
+     */
     setEngine(engine: Engine) {
         this.engine = engine;
     }
 
+    /**
+     * Find an entity by its tag
+     * @param tag the tag of the entity
+     * @returns the entity with the specified tag or undefined if not found
+     */
+    public findEntityByTag(tag: string) {
+        if (!this.engine) {
+            throw new Error("Engine not set for entity");
+        }
+        return this.engine.findEntityByTag(tag);
+    }
+
+
+    /**
+     * Called when the entity is added to the scene
+     */
+    public start() {
+
+    }
+
+    /**
+     * Called when the entity is removed from the scene
+     */
+    public onDestroy() {
+
+    }
+
+    /**
+     * Update the entity, called every frame
+     * 
+     * @param deltaTime the time since the last frame
+     */
     abstract update(deltaTime: number): void;
 }
 
@@ -51,7 +90,6 @@ export default class Engine {
     addEntity(entity: Entity) {
         entity.setEngine(this);
         this.entities.push(entity);
-
         this.scene.add(entity.object);
     }
 
@@ -118,6 +156,8 @@ export default class Engine {
         this.clock = new THREE.Clock();
 
         window.addEventListener('resize', this.handleWindowResize.bind(this), false);
+
+        this.findEntitiesByType(typeof (Entity));
     }
 
     handleWindowResize() {
@@ -134,6 +174,8 @@ export default class Engine {
      */
     start() {
         this.clock.start();
+
+        this.entities.forEach(entity => entity.start());
 
         this.gameLoop();
     }
@@ -164,5 +206,9 @@ export default class Engine {
 
     findEntityByTag(tag: string) {
         return this.entities.find(entity => entity.tag === tag);
+    }
+
+    findEntitiesByType(type: any) {
+        return this.entities.filter(entity => entity instanceof type);
     }
 }

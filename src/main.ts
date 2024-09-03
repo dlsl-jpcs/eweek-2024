@@ -20,14 +20,15 @@ sea.mesh.position.y = -600;
 engine.addEntity(sea);
 
 let loader = new GLTFLoader();
-let boat: Boat;
-loader.load('/sailboat.glb', (gltf) => {
-  boat = new Boat(gltf.scene);
-  boat.mesh.position.y = 100;
-  boat.mesh.position.x = -100;
-  engine.addEntity(boat);
-});
 
+const boatModel = await loader.loadAsync('/sailboat.glb');
+let boat = new Boat(boatModel.scene);
+boat.mesh.position.y = 100;
+boat.mesh.position.x = -100;
+
+engine.addEntity(boat);
+
+// TODO: Probably add an IcebergGenerator class that generates icebergs
 let iceberg: Iceberg;
 loader.load('./iceberg.glb', (gltf) => {
   iceberg = new Iceberg(gltf.scene);
@@ -44,7 +45,6 @@ engine.addEntity(new BoatMarker(true));
 setupLighting(engine);
 
 engine.start();
-
 
 
 
