@@ -23,12 +23,15 @@ export class Sea extends Entity {
     constructor() {
         super("sea");
 
-        var geom = new THREE.CylinderGeometry(600,
-            600,
-            800,
-            40,
-            10);
+        var geom = new THREE.CylinderGeometry(
+            600 /** radius top */,
+            600 /** radius bottom */,
+            800 /** height */,
+            40 /** radius segments */,
+            10 /** height segments */,
+        );
 
+        // we rotate the cyclinder to the right, so it looks like a sea
         geom.applyMatrix4(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
 
         // important: by merging vertices we ensure the continuity of the waves
@@ -41,9 +44,11 @@ export class Sea extends Entity {
 
         const length = position.count;
 
-        // // create an array to store new data associated to each vertex
+
         this.waves = [];
 
+        // we get each vertex of the cylinder, and add a random value associated to it
+        // this will be used later on #moveWaves
         for (var i = 0; i < length; i++) {
             // store some data associated to it
             const vec = new THREE.Vector3().fromBufferAttribute(position, i);
