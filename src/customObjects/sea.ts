@@ -20,7 +20,7 @@ export class Sea extends Entity {
     waves: Wave[];
     mesh: THREE.Mesh;
 
-    constructor(color: string = "#68c3c0") {
+    constructor(color: string = "#378bf1") {
         super("sea");
 
         var geom = new THREE.CylinderGeometry(
