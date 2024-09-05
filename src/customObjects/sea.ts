@@ -26,12 +26,15 @@ export class Sea extends Entity {
     constructor(color: string = "#378bf1") {
         super("sea");
 
+
+        const height = 800;
+
         var geom = new THREE.CylinderGeometry(
             600 /** radius top */,
             600 /** radius bottom */,
-            800 /** height */,
-            40 /** radius segments */,
-            10 /** height segments */,
+            height /** height */,
+            45 /** radius segments */,
+            15 /** height segments */,
         );
 
         // we rotate the cyclinder to the right, so it looks like a sea
@@ -62,9 +65,11 @@ export class Sea extends Entity {
                 // a random angle
                 ang: Math.random() * Math.PI * 2,
                 // a random distance
-                amp: 5 + Math.random() * 15,
+                amp: 3 + Math.random() * 3.5,
                 // a random speed between 0.016 and 0.048 radians / frame
-                speed: 0.016 + Math.random() * 0.032
+                speed: 0.016 + Math.random() * 0.032,
+
+
             });
         };
 
@@ -82,6 +87,8 @@ export class Sea extends Entity {
 
         this.object = mesh;
         this.mesh = mesh;
+
+        this.mesh.position.y = -600;
     }
 
     moveWaves() {
@@ -120,5 +127,17 @@ export class Sea extends Entity {
 
     setSpeed(speed: number) {
         this.speed = speed;
+    }
+
+    getSpeed() {
+        return this.speed;
+    }
+
+    getRandomWave() {
+        return this.waves[Math.floor(Math.random() * this.waves.length)];
+    }
+
+    getWidth() {
+        return 800;
     }
 }

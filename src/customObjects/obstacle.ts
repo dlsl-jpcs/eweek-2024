@@ -1,21 +1,20 @@
 import * as THREE from "three";
 import { Entity } from "../engine/engine";
+import { getModel, ICEBERG } from "../utils/resource";
+import { Sea } from "./sea";
 
 
 //Iceberg
-export class Iceberg extends Entity{
-    
+export class Iceberg extends Entity {
+
     mesh: THREE.Object3D;
 
-    zPosition: number = 0;
-    xPosition: number = 0;
-    zDirection: number = 1; // 1 for moving forward, -1 for moving backward
-    xDirection: number = 1; // 1 for moving right, -1 for moving left
-    
-    constructor(mesh: THREE.Object3D){
+    private sea!: Sea;
+
+    constructor() {
         super("iceberg");
 
-        this.mesh = mesh;
+        this.mesh = getModel(ICEBERG).scene.clone();
         this.mesh.scale.set(15,
             15,
             15);
@@ -24,15 +23,13 @@ export class Iceberg extends Entity{
     }
 
 
+    public start(): void {
+        this.sea = this.findEntityByTag("sea") as Sea;
+    }
+
+
 
     update(deltaTime: number): void {
-        this.mesh.position.z = this.zPosition;
-        if (this.zPosition >= 200) {
-            this.zDirection = -1;
-        } else if (this.zPosition <= -200) {
-            this.zDirection = 1;
-        }
-        this.zPosition += this.zDirection;
-
+        this.mesh.position.x += (100 * this.sea.getSpeed() * deltaTime);
     }
 }

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { Entity } from "../engine/engine";
+import { getModel, SAILBOAT } from "../utils/resource";
 
 
 const gravity = 0.005;
@@ -85,10 +86,13 @@ export class Boat extends Entity {
 
     velocity: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
 
-    constructor(mesh: THREE.Object3D) {
+    constructor() {
         super("player");
 
-        this.mesh = mesh;
+        this.mesh = getModel(SAILBOAT).scene.clone();
+
+        this.mesh.position.y = 100;
+        this.mesh.position.x = -100;
 
         const scale = 10;
         this.mesh.scale.set(scale,
@@ -96,6 +100,15 @@ export class Boat extends Entity {
             scale);
 
         this.object = this.mesh;
+
+        // listen to window resize, so we can rescale the boat
+        window.addEventListener("resize", () => {
+            let scale = window.innerWidth / 84;
+            scale = Math.min(scale, 15);
+            this.mesh.scale.set(scale,
+                scale,
+                scale);
+        });
     }
 
     override start(): void {
