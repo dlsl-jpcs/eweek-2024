@@ -44,8 +44,8 @@ export class MainMenu extends Entity {
 
     }
 
-    updateScore(timer: number) {
-        this.scoreVal.textContent = Math.round(timer).toString();
+    updateScore(score: number) {
+        this.scoreVal.textContent = Math.round(score).toString();
     }
 
     updateDebugString(debugString: string) {

@@ -47,10 +47,10 @@ export class GameLogic extends Entity {
         if (this.gameState === GameState.PLAYING) {
             // increment timer per second
             this.timer += deltaTime;
-            // update the timer on the UI
-            this.mainMenu.updateScore(this.timer);
             // update the current score
-            this.currentScore = Math.round(this.timer);
+            this.currentScore = Math.round(this.timer / 10);
+            // update the timer on the UI
+            this.mainMenu.updateScore(this.currentScore);
 
             // spawn obstacles
             this.spawnObstacle(deltaTime);
@@ -140,5 +140,9 @@ export class GameLogic extends Entity {
 
     isDebugModeOn() {
         return this.debugModeOn;
+    }
+
+    getCurrentScore() {
+        return this.currentScore;
     }
 }
