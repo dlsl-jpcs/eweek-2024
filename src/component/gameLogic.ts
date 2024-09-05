@@ -41,11 +41,8 @@ export class GameLogic extends Entity {
         if (this.gameState === GameState.PLAYING) {
             // increment timer per second
             this.timer += deltaTime;
-
-
-
             // update the timer on the UI
-            this.mainMenu.updateTimer(this.timer);
+            this.mainMenu.updateScore(this.timer);
         }
     }
 

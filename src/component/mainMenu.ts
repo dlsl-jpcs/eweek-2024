@@ -8,7 +8,7 @@ export class MainMenu extends Entity {
 
     private ui!: HTMLElement;
     private gameStartThings!: HTMLElement;
-    private timer!: HTMLElement;
+    private scoreVal!: HTMLElement;
 
     constructor() {
         super("mainMenu");
@@ -19,13 +19,15 @@ export class MainMenu extends Entity {
 
         this.ui = document.getElementById("ui")!;
         this.gameStartThings = document.getElementById("game_start_things")!;
-        this.timer = document.getElementById("timer")!;
+
+        this.scoreVal = document.getElementById("scoreVal")!;
 
         // listen for tap events, when the screen is tapped, we start the game
         document.addEventListener("click", () => {
             if (this.gameLogic.getGameState() === GameState.IDLE) {
                 this.gameLogic.setGameState(GameState.PLAYING);
 
+                this.scoreVal.style.opacity = "1";
                 this.gameStartThings.style.opacity = "0";
             }
         });
@@ -36,7 +38,7 @@ export class MainMenu extends Entity {
 
     }
 
-    updateTimer(timer: number) {
-        this.timer.textContent = "Time: " + timer;
+    updateScore(timer: number) {
+        this.scoreVal.textContent = Math.round(timer).toString();
     }
 }
