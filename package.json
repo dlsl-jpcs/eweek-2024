@@ -10,7 +10,8 @@
   },
   "module": "index.ts",
   "dependencies": {
-    "three": "^0.167.1"
+    "three": "^0.167.1",
+    "vite-plugin-mix": "^0.4.0"
   },
   "devDependencies": {
     "typescript": "^5.5.3",
