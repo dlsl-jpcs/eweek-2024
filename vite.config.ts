@@ -22,7 +22,7 @@ const mix = (mixPlugin as unknown as Mix).default
 export default defineConfig({
   plugins: [
     mix({
-      handler: './api.ts',
+      handler: './src/api/api.ts',
     }),
   ],
 })
