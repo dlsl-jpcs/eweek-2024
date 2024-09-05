@@ -10,15 +10,15 @@ import { Sea } from './customObjects/sea';
 import { Boat, BoatMarker } from './customObjects/boat';
 import { setupLighting } from './customObjects/lights';
 import { Iceberg } from './customObjects/obstacle';
-import { BoxGeometry, CircleGeometry, CylinderGeometry, Mesh, MeshBasicMaterial, PlaneGeometry, Sprite, SpriteMaterial, TextureLoader, Vector3 } from 'three';
-import { CSS2DObject } from 'three/examples/jsm/Addons.js';
+import { GameLogic } from './component/gameLogic';
 
 
-import * as THREE from 'three';
-import { screenToWorld } from './utils';
 
 const engine = new Engine();
 
+
+let gameLogic = new GameLogic();
+engine.addEntity(gameLogic);
 
 let sea = new Sea();
 sea.mesh.position.y = -600;
@@ -54,7 +54,7 @@ engine.addEntity(new BoatMarker(true));
 /** for x, negative means up, positive means down
   *  for y, negative means down, positive means up
   * for z, negative means right, positive means left 
-*/ 
+*/
 
 /*const geometry = new THREE.PlaneGeometry(100, 100); // Adjust size as needed
 const plane = new THREE.Mesh(geometry);
@@ -66,7 +66,7 @@ plane.scale.set(1, 1, 1);
 plane.rotation.x = -Math.PI / 2; 
 plane.rotation.y = Math.PI / 6;*/
 
- 
+
 //engine.getCurrentScene().add(plane);
 
 

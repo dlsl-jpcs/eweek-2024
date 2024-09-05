@@ -9,7 +9,7 @@ export enum GameState {
     OVER = 3,
 }
 
-class GameLogic extends Entity {
+export class GameLogic extends Entity {
     private currentScore: number = 0;
     private highScore: number = 0;
     private playerName: string = "";

@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 
 import { Position, Size } from '../utils';
-import { gameLogic } from '../component/gameLogic';
 
 export abstract class Entity {
 
@@ -101,7 +100,7 @@ export default class Engine {
 
         entity.awake();
     }
-    
+
 
     /**
      * Initialize the scene, camera, renderer, and other properties
@@ -198,7 +197,6 @@ export default class Engine {
     }
 
     update(deltaTime: number) {
-        gameLogic.update(deltaTime);
         this.entities.forEach(entity => entity.update(deltaTime));
     }
 
