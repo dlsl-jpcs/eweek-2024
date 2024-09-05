@@ -9,7 +9,7 @@
 </head>
 
 <body>
-  <div id="world"></div>
+  <div id="blur"><div id="world"></div></div>
   <div id="vignette"></div>
   <div id="ui">
     <div id="main_ui">
@@ -18,14 +18,22 @@
           <img src="JPCSTextLogo.png" alt="JPCS Text Logo" id="jpcsTextLogo" />
         </div>
         <img src="PaddleFrenzyTitle.png" alt="Paddle Frenzy Logo" id="biglogo" />
-        <h1>Tap to Play!</h1>
+        <h1 id="tap_to_play_label">Tap to Play!</h1>
       </div>
       <h1 id="debugString"></h1>
       <div id="in_game_things">
-      
       </div>
       <div id="score_area">
         <h1 id="scoreVal">0</h1>
+      </div>
+      <div id="auth_box">
+          <div id="auth_modal">
+            <div id="auth_form">
+              <h1>Enter Verification Token</h1>
+              <input type="text" id="auth_token" placeholder="" size="4" maxlength="4" style="text-transform:uppercase"/>
+            </div>
+            <button id="submit_token">Verify</button>
+          </div>
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
