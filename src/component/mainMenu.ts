@@ -9,6 +9,8 @@ export class MainMenu extends Entity {
     private ui!: HTMLElement;
     private gameStartThings!: HTMLElement;
     private scoreVal!: HTMLElement;
+    
+    private debugString!: HTMLElement;
 
     constructor() {
         super("mainMenu");
@@ -22,6 +24,8 @@ export class MainMenu extends Entity {
         this.gameStartThings = document.getElementById("game_start_things")!;
 
         this.scoreVal = document.getElementById("scoreVal")!;
+
+        this.debugString = document.getElementById("debugString")!;
 
         // listen for tap events, when the screen is tapped, we start the game
         document.addEventListener("click", () => {
@@ -42,5 +46,9 @@ export class MainMenu extends Entity {
 
     updateScore(timer: number) {
         this.scoreVal.textContent = Math.round(timer).toString();
+    }
+
+    updateDebugString(debugString: string) {
+        this.debugString.innerHTML = debugString;
     }
 }

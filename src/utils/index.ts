@@ -18,3 +18,7 @@ export function cartesianToIsometric(pos: Position) {
 export function randomIntRange(min: number, max: number) { 
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+export function clamp(input: number, min: number, max: number) {
+  return Math.min(Math.max(input, min), max);
+};
