@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { Entity } from "../engine/engine";
 
-enum GameState {
+export enum GameState {
     IDLE = 0,
     STARTED = 1,
     PAUSED = 2,
@@ -20,11 +20,11 @@ class GameLogic {
     }
 
     init() {
-      
+
     }
-    
+
     update(deltaTime: number): void {
-        
+
     }
 
     processPlayerAuth(token: string) {
