@@ -1,12 +1,13 @@
 import * as THREE from "three";
 import { Entity } from "../engine/engine";
 import { MainMenu } from "./mainMenu";
+import { Sea } from "../customObjects/sea";
 
 export enum GameState {
-    IDLE = 0,
-    STARTED = 1,
-    PAUSED = 2,
-    OVER = 3,
+    IDLE,
+    PAUSED,
+    OVER,
+    PLAYING,
 }
 
 export class GameLogic extends Entity {
@@ -16,8 +17,13 @@ export class GameLogic extends Entity {
     private gameState: GameState = GameState.IDLE;
     private authToken: string = "";
 
+    private timer: number = 0;
 
-    // private mainMenu!: MainMenu;
+
+
+
+    private mainMenu!: MainMenu;
+    private sea!: Sea;
 
     constructor() {
         super("GameLogic");
@@ -25,17 +31,22 @@ export class GameLogic extends Entity {
 
     public awake(): void {
         this.gameState = GameState.IDLE;
-
-        // this.mainMenu = new MainMenu();
-
-        console.log("GameLogic awake");
-        // console.log(this.mainMenu);
+        this.mainMenu = this.findEntityByTag("mainMenu") as MainMenu;
+        this.sea = this.findEntityByTag("sea") as Sea;
     }
 
 
 
     override update(deltaTime: number): void {
+        if (this.gameState === GameState.PLAYING) {
+            // increment timer per second
+            this.timer += deltaTime;
 
+
+
+            // update the timer on the UI
+            this.mainMenu.updateTimer(this.timer);
+        }
     }
 
     processPlayerAuth(token: string) {
@@ -61,5 +72,14 @@ export class GameLogic extends Entity {
 
     getGameState() {
         return this.gameState;
+    }
+
+    setGameState(state: GameState) {
+        this.gameState = state;
+
+        if (state === GameState.PLAYING) {
+            this.currentScore = 0;
+            this.sea.setSpeed(0.5);
+        }
     }
 }

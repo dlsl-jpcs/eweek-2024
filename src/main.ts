@@ -11,14 +11,20 @@ import { Boat, BoatMarker } from './customObjects/boat';
 import { setupLighting } from './customObjects/lights';
 import { Iceberg } from './customObjects/obstacle';
 import { GameLogic } from './component/gameLogic';
+import { MainMenu } from './component/mainMenu';
 
+import * as THREE from 'three';
 
 
 const engine = new Engine();
 
+let mainMenu = new MainMenu();
+engine.addEntity(mainMenu);
 
 let gameLogic = new GameLogic();
 engine.addEntity(gameLogic);
+
+
 
 let sea = new Sea();
 sea.mesh.position.y = -600;
@@ -56,19 +62,6 @@ engine.addEntity(new BoatMarker(true));
   * for z, negative means right, positive means left 
 */
 
-/*const geometry = new THREE.PlaneGeometry(100, 100); // Adjust size as needed
-const plane = new THREE.Mesh(geometry);
-plane.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Adjust color as needed
-plane.position.set(-450, 0, 0); 
-plane.scale.set(1, 1, 1); 
-
-// reverse camera rotation. is there an easier way to do this??
-plane.rotation.x = -Math.PI / 2; 
-plane.rotation.y = Math.PI / 6;*/
-
-
-//engine.getCurrentScene().add(plane);
-
 
 // an attempt for a ui?
 
@@ -80,6 +73,7 @@ p.style.zIndex = '100';*/
 
 //w?.appendChild(p);
 
+engine.init();
 
 
 /// ------ END OF COFFEE'S DIRTY ASS SPAGHETTI CODE ------

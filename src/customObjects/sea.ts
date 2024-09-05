@@ -20,6 +20,9 @@ export class Sea extends Entity {
     waves: Wave[];
     mesh: THREE.Mesh;
 
+    private speed: number = 0.02;
+
+
     constructor(color: string = "#378bf1") {
         super("sea");
 
@@ -110,8 +113,12 @@ export class Sea extends Entity {
     }
 
     update(deltaTime: number): void {
-        this.mesh.rotation.z -= .002;
+        this.mesh.rotation.z -= this.speed * deltaTime;
 
         this.moveWaves();
+    }
+
+    setSpeed(speed: number) {
+        this.speed = speed;
     }
 }

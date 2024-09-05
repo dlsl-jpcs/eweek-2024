@@ -90,22 +90,22 @@ export default class Engine {
     private entities: Entity[] = [];
 
     constructor() {
-        this.init();
+
     }
 
     addEntity(entity: Entity) {
         entity.setEngine(this);
         this.entities.push(entity);
         this.scene.add(entity.object);
-
-        entity.awake();
     }
 
 
     /**
      * Initialize the scene, camera, renderer, and other properties
      */
-    private init() {
+    init() {
+        this.entities.forEach(entity => entity.awake());
+
         this.width = window.innerWidth;
         this.height = window.innerHeight;
 
@@ -165,8 +165,6 @@ export default class Engine {
         this.clock = new THREE.Clock();
 
         window.addEventListener('resize', this.handleWindowResize.bind(this), false);
-
-        this.findEntitiesByType(typeof (Entity));
     }
 
     handleWindowResize() {
