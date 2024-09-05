@@ -1,6 +1,7 @@
+import { Boat } from "../customObjects/boat";
 import { Entity } from "../engine/engine";
 import { GameLogic, GameState } from "./gameLogic";
-
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 
 export class MainMenu extends Entity {
 
@@ -23,7 +24,6 @@ export class MainMenu extends Entity {
     public start(): void {
         this.gameLogic = this.findEntityByTag("GameLogic") as GameLogic;
 
-
         this.ui = document.getElementById("ui")!;
         this.gameStartThings = document.getElementById("game_start_things")!;
 
@@ -36,11 +36,8 @@ export class MainMenu extends Entity {
 
         this.debugString = document.getElementById("debugString")!;
 
-       /* document.addEventListener("click", () => {
-            this.authDone();
-        });*/
+        this.registerCodeSubmitListener();
     }
-
 
     update(deltaTime: number): void {
 
@@ -53,11 +50,31 @@ export class MainMenu extends Entity {
     updateDebugString(debugString: string) {
         this.debugString.innerHTML = debugString;
     }
+    
+    registerCodeSubmitListener() {
+        const submitCodeButton = document.getElementById("submit_code")!;
+        submitCodeButton.addEventListener("click", async () => {
+            const codeInput = document.getElementById("auth_code") as HTMLInputElement;
+            if (await this.gameLogic.checkCode(codeInput.value)) {
+                this.authDone();
+            }
+        });
+    }
 
-    /**
-        // listen for tap events, when the screen is tapped, we start the game
+    // secure this
+    authDone() {
+        this.blur.id = "done_blur";
+        this.authModal.style.opacity = "0";
+        this.tapToPlayLabel.style.opacity = "1";
+
         document.addEventListener("click", () => {
             console.log(this.gameLogic.getGameState());
+
+            let boat = this.engine.findEntityByTag("player")! as Boat;
+            if (boat) {
+                boat.enableControls();
+            }
+
             if (this.gameLogic.getGameState() === GameState.IDLE) {
                 this.gameLogic.setGameState(GameState.PLAYING);
 
@@ -65,12 +82,6 @@ export class MainMenu extends Entity {
                 this.gameStartThings.style.opacity = "0";
                 this.vignette.style.opacity = "0";
             }
-        }); */
-
-    authDone() {
-        this.blur.id = "done_blur";
-        this.authModal.style.opacity = "0";
-        this.tapToPlayLabel.style.opacity = "1";
+        });
     }
-    
 }

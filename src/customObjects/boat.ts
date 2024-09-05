@@ -112,7 +112,14 @@ export class Boat extends Entity {
     }
 
     override start(): void {
-        // move boat left or right based on keypress
+       
+    }
+
+    enableControls() {
+
+        console.log("Enabling controls");
+        
+         // move boat left or right based on keypress
         window.addEventListener("keydown", (event) => {
             const key = event.key;
             if (key === "a") {

@@ -5,6 +5,7 @@ import { Sea } from "../customObjects/sea";
 import { Iceberg } from "../customObjects/obstacle";
 import { Return } from "three/webgpu";
 import { clamp } from "../utils";
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 
 export enum GameState {
     IDLE,
@@ -18,7 +19,6 @@ export class GameLogic extends Entity {
     private highScore: number = 0;
     private playerName: string = "";
     private gameState: GameState = GameState.IDLE;
-    private authToken: string = "";
 
     private timer: number = 0;
 
@@ -37,10 +37,16 @@ export class GameLogic extends Entity {
         super("GameLogic");
     }
 
-    public start(): void {
+    // this became async.. any issues?
+    public async start(): Promise<void> {
         this.gameState = GameState.IDLE;
         this.mainMenu = this.findEntityByTag("mainMenu") as MainMenu;
         this.sea = this.findEntityByTag("sea") as Sea;
+
+        if (await this.isPlayerAuthorized()) {
+            console.log("Player is authorized");
+            this.mainMenu.authDone();
+        }
     }
 
     override update(deltaTime: number): void {
@@ -92,19 +98,110 @@ export class GameLogic extends Entity {
          */
     }
 
-    isPlayerAuthorized() {
-        if (this.authToken.length < 0)
-            return false;
+    isPlayerAlreadyLoggedIn() {
+        return this.playerName !== "" || this.highScore !== 0;
+    }
 
-        /**
-            verification logic here,
-            in order to be verified, player must be given a code by us,
-            where we will be the ones to input their names for a specific token,
-            so after they input their token or code, it asks the api for their name,
-            information etc which their client will use for subsequent requests
-         */
+    // check this for potential bugs @tyron
+    async isPlayerAuthorized() {
+        
+        if (this.isPlayerAlreadyLoggedIn())
+            return true;
 
-        return true;
+        interface Response {
+            status: string,
+            message: string,
+            user_data: {
+                username: string,
+                name: string,
+                email: string,
+                student_id: string,
+                top_score: number
+            }
+        }
+
+        const config: AxiosRequestConfig = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        let isVerified = false;
+
+        await axios.post("http://localhost:5173/api/v1/player/checkToken", {}, config)
+            .then((response) => {
+                const data = response.data as Response;
+                console.log(data);
+                if (data.status === "verified") {
+
+                    this.playerName = data.user_data.username;
+                    this.highScore = data.user_data.top_score;
+
+                    isVerified = true;
+                } else {
+                    isVerified = false;
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+        return isVerified;
+    }
+
+    // check this for potential bugs @tyron
+    async checkCode(code: string) {
+
+        if (this.isPlayerAlreadyLoggedIn())
+            return true;
+        
+        interface Response {
+            status: string,
+            message: string,
+            user_data: {
+                username: string,
+                name: string,
+                email: string,
+                student_id: string,
+                top_score: number
+            }
+        }
+
+        interface Request {
+            code: string
+        }
+
+        const request: Request = {
+            code: code
+        }
+
+        const config: AxiosRequestConfig = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        let isVerified = false;
+
+        await axios.post("http://localhost:5173/api/v1/player/verifyCode", request, config)
+            .then((response) => {
+                const data = response.data as Response;
+                console.log(data);
+                if (data.status === "verified") {
+                    
+                    this.playerName = data.user_data.username;
+                    this.highScore = data.user_data.top_score;
+                    
+                    isVerified = true;
+                } else {
+                    isVerified = false;
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+            
+        return isVerified;
     }
 
     getGameState() {
@@ -133,7 +230,6 @@ export class GameLogic extends Entity {
         debugString += `Current Score: ${this.currentScore}<br>`;
         debugString += `High Score: ${this.highScore}<br>`;
         debugString += `Player Name: ${this.playerName}<br>`;
-        debugString += `Auth Token: ${this.authToken}<br>`;
 
         this.mainMenu.updateDebugString(debugString);
     }
