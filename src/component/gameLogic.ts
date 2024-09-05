@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { Entity } from "../engine/engine";
+import { MainMenu } from "./mainMenu";
 
 export enum GameState {
     IDLE = 0,
@@ -8,22 +9,32 @@ export enum GameState {
     OVER = 3,
 }
 
-class GameLogic {
+class GameLogic extends Entity {
     private currentScore: number = 0;
     private highScore: number = 0;
     private playerName: string = "";
     private gameState: GameState = GameState.IDLE;
     private authToken: string = "";
 
+
+    // private mainMenu!: MainMenu;
+
     constructor() {
-        this.init();
+        super("GameLogic");
     }
 
-    init() {
+    public awake(): void {
+        this.gameState = GameState.IDLE;
 
+        // this.mainMenu = new MainMenu();
+
+        console.log("GameLogic awake");
+        // console.log(this.mainMenu);
     }
 
-    update(deltaTime: number): void {
+
+
+    override update(deltaTime: number): void {
 
     }
 
@@ -52,7 +63,3 @@ class GameLogic {
         return this.gameState;
     }
 }
-
-// access gamelogic via here! wow a singleton?
-// we use singletons in javascript now yes yes? kidding.
-export const gameLogic = new GameLogic();
