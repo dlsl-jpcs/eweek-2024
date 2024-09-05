@@ -10,6 +10,17 @@ body {
   background: linear-gradient(#bad7e4, skyblue);
 }
 
+#vignette {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  box-shadow: 0 100px 500px rgb(15, 9, 48) inset;
+  opacity: 1.0;
+  transition: opacity 3.5s linear; 
+}
+
 #ui {
   position: absolute;
   width: 100%;

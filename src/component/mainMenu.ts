@@ -9,6 +9,7 @@ export class MainMenu extends Entity {
     private ui!: HTMLElement;
     private gameStartThings!: HTMLElement;
     private scoreVal!: HTMLElement;
+    private vignette!: HTMLElement;
     
     private debugString!: HTMLElement;
 
@@ -23,6 +24,8 @@ export class MainMenu extends Entity {
         this.ui = document.getElementById("ui")!;
         this.gameStartThings = document.getElementById("game_start_things")!;
 
+        this.vignette = document.getElementById("vignette")!;
+
         this.scoreVal = document.getElementById("scoreVal")!;
 
         this.debugString = document.getElementById("debugString")!;
@@ -35,6 +38,7 @@ export class MainMenu extends Entity {
 
                 this.scoreVal.style.opacity = "1";
                 this.gameStartThings.style.opacity = "0";
+                this.vignette.style.opacity = "0";
             }
         });
     }
