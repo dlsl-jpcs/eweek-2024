@@ -47,11 +47,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: all 0.3s;
 }
 
-#game_start_things img {
+#biglogo {
   width: 50vw;
-  margin-top: 5vh;
+  margin-top: 10vh;
   min-width: 360px;
   max-width: 600px;
 }
@@ -102,4 +103,19 @@ body {
   font-size: 0.9rem;
   font-family: Arial, Helvetica, sans-serif;
   text-shadow: 0.05rem 0.05rem 0px #121212;
+}
+
+#topInitialThings {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+#jpcsTextLogo {
+  margin-top: 10px;
+  width: 80vw;
+  max-width: 700px;
+  min-width: 450px;
+  filter: drop-shadow(2px 2px 0.1px rgba(0, 0, 0, 1));
 }
