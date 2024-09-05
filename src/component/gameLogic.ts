@@ -29,7 +29,7 @@ export class GameLogic extends Entity {
     private sea!: Sea;
     
     /**       debugging stuff       */
-    private debugModeOn: boolean = true;
+    private debugModeOn: boolean = false;
     private obstacleSpawnedDebug: number = 0;
     /** --------------------------- */
 
