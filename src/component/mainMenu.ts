@@ -14,8 +14,9 @@ export class MainMenu extends Entity {
         super("mainMenu");
     }
 
-    public awake(): void {
+    public start(): void {
         this.gameLogic = this.findEntityByTag("GameLogic") as GameLogic;
+
 
         this.ui = document.getElementById("ui")!;
         this.gameStartThings = document.getElementById("game_start_things")!;
@@ -23,6 +24,7 @@ export class MainMenu extends Entity {
 
         // listen for tap events, when the screen is tapped, we start the game
         document.addEventListener("click", () => {
+            console.log(this.gameLogic.getGameState());
             if (this.gameLogic.getGameState() === GameState.IDLE) {
                 this.gameLogic.setGameState(GameState.PLAYING);
 

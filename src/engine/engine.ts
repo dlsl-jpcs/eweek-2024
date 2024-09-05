@@ -1,11 +1,14 @@
 import * as THREE from 'three';
 
 import { Position, Size } from '../utils';
+import { BoatMarker } from '../customObjects/boat';
 
 export abstract class Entity {
 
     public object: THREE.Object3D;
     public tag: string;
+
+    public isAlive: boolean = false;
 
     protected engine!: Engine;
 
@@ -94,7 +97,6 @@ export default class Engine {
     }
 
     addEntity(entity: Entity) {
-        entity.setEngine(this);
         this.entities.push(entity);
         this.scene.add(entity.object);
     }
@@ -104,12 +106,9 @@ export default class Engine {
      * Initialize the scene, camera, renderer, and other properties
      */
     init() {
-        this.entities.forEach(entity => entity.awake());
 
         this.width = window.innerWidth;
         this.height = window.innerHeight;
-
-        console.log(this.width, this.height);
 
         this.aspectRatio = this.width / this.height;
         this.fieldOfView = 60;
@@ -129,9 +128,7 @@ export default class Engine {
 
 
         // look down
-        camera.lookAt(new THREE.Vector3(0,
-            0,
-            0));
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
 
         // rotate 90 degress
         camera.rotation.z = Math.PI / 2;
@@ -182,9 +179,21 @@ export default class Engine {
     start() {
         this.clock.start();
 
-        this.entities.forEach(entity => entity.start());
+        this.entities.forEach(entity => {
+            entity.awake();
+        });
 
         this.gameLoop();
+    }
+
+    /**
+     * Instantiate a new entity of the specified type
+     */
+    instantiate<T extends Entity>(type: new (...args: any) => T, ...args: any[]): T {
+        const entity = new type(...args);
+        entity.setEngine(this);
+        this.addEntity(entity);
+        return entity;
     }
 
     gameLoop() {
@@ -195,6 +204,12 @@ export default class Engine {
     }
 
     update(deltaTime: number) {
+        this.entities.forEach(entity => {
+            if (!entity.isAlive) {
+                entity.start();
+                entity.isAlive = true;
+            }
+        });
         this.entities.forEach(entity => entity.update(deltaTime));
     }
 

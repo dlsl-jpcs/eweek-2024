@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Entity } from "../engine/engine";
 import { MainMenu } from "./mainMenu";
 import { Sea } from "../customObjects/sea";
+import { Iceberg } from "../customObjects/obstacle";
 
 export enum GameState {
     IDLE,
@@ -19,6 +20,9 @@ export class GameLogic extends Entity {
 
     private timer: number = 0;
 
+    private obstacleTimer: number = 0;
+    private obstacleSpawnRate: number = 10;
+
 
 
 
@@ -27,9 +31,11 @@ export class GameLogic extends Entity {
 
     constructor() {
         super("GameLogic");
+
+
     }
 
-    public awake(): void {
+    public start(): void {
         this.gameState = GameState.IDLE;
         this.mainMenu = this.findEntityByTag("mainMenu") as MainMenu;
         this.sea = this.findEntityByTag("sea") as Sea;
@@ -43,9 +49,33 @@ export class GameLogic extends Entity {
             this.timer += deltaTime;
 
 
-
             // update the timer on the UI
             this.mainMenu.updateTimer(this.timer);
+
+
+            // spawn obstacles
+            this.spawnObstacle();
+        }
+    }
+
+    /**
+     * Called every frame, responsible for spawning obstacles at random
+     */
+    spawnObstacle() {
+        this.obstacleTimer += 0.01;
+
+        if (this.obstacleTimer > this.obstacleSpawnRate) {
+            this.obstacleTimer = 0;
+
+            const iceberg = this.engine.instantiate(Iceberg);
+            iceberg.object.position.set(-300, 0, 0)
+
+            const width = this.sea.getWidth() / 2;
+            const lowerBound = -width;
+            const upperBound = width;
+
+            const randomZ = Math.random() * (upperBound - lowerBound) + lowerBound;
+            iceberg.object.position.z = randomZ;
         }
     }
 
