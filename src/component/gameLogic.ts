@@ -16,11 +16,21 @@ export enum GameState {
 }
 
 export class GameLogic extends Entity {
+    private playerData: PlayerData = {
+        username: "",
+        top_score: 0,
+        id: 0,
+        name: "",
+        email: "",
+        student_id: "",
+        is_facilitator: false,
+        course: "",
+        section: "",
+        code: "",
+    };
+
     private currentScore: number = 0;
-    private highScore: number = 0;
-    private playerName: string = "";
     private gameState: GameState = GameState.IDLE;
-    private playerSigned: boolean = false;
 
     private timer: number = 0;
 
@@ -31,7 +41,7 @@ export class GameLogic extends Entity {
     private sea!: Sea;
 
     /**       debugging stuff       */
-    private debugModeOn: boolean = false;
+    private debugModeOn: boolean = true;
     private obstacleSpawnedDebug: number = 0;
     /** --------------------------- */
 
@@ -111,18 +121,13 @@ export class GameLogic extends Entity {
     }
 
     async checkPlayerSignature() {
-        if (this.hasPlayerSigned()) {
-            return true;
-        }
-
         return await signatureCheck().then((result) => {
-            this.playerSigned = result;
             return result;
         });
     }
 
     isPlayerAlreadyLoggedIn() {
-        return this.playerName !== "" || this.highScore !== 0;
+        return this.getPlayerData().student_id !== "";
     }
 
     // check this for potential bugs @tyron
@@ -133,9 +138,8 @@ export class GameLogic extends Entity {
         }
 
         const result = await tokenCheck().catch(() => null);
-        if (result && result.user_data) {
-            this.playerName = result.user_data.username;
-            this.highScore = result.user_data.top_score;
+        if (result) {
+            this.playerData = result;
             return true;
         }
     }
@@ -151,12 +155,7 @@ export class GameLogic extends Entity {
     }
 
     async checkSig(signatureBase64: string) {
-        if (this.hasPlayerSigned()) {
-            return true;
-        }
-
         return submitSignature(signatureBase64).then((result) => {
-            this.playerSigned = result;
             return result;
         });
     }
@@ -185,8 +184,15 @@ export class GameLogic extends Entity {
         debugString += `Game State: ${GameState[this.gameState]}<br>`;
         debugString += `Timer: ${this.timer}<br>`;
         debugString += `Current Score: ${this.currentScore}<br>`;
-        debugString += `High Score: ${this.highScore}<br>`;
-        debugString += `Player Name: ${this.playerName}<br>`;
+        debugString += `High Score: ${this.getPlayerData().top_score}<br>`;
+        debugString += `Player First Name: ${this.getPlayerData().username}<br>`;
+        debugString += `Player Name: ${this.getPlayerData().name}<br>`;
+        debugString += `Player ID: ${this.getPlayerData().id}<br>`;
+        debugString += `Player Email: ${this.getPlayerData().email}<br>`;
+        debugString += `Player Student ID: ${this.getPlayerData().student_id}<br>`;
+        debugString += `Player Course: ${this.getPlayerData().course}<br>`;
+        debugString += `Player Section: ${this.getPlayerData().section}<br>`;
+        debugString += `Player Code: ${this.getPlayerData().code}<br>`;
 
         this.mainMenu.updateDebugString(debugString);
     }
@@ -199,8 +205,8 @@ export class GameLogic extends Entity {
         return this.currentScore;
     }
 
-    hasPlayerSigned() {
-        return this.playerSigned;
+    getPlayerData() {
+        return this.playerData;
     }
 
 }

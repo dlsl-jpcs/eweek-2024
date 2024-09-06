@@ -135,6 +135,8 @@ export class MainMenu extends Entity {
 
     showSigModal() {
         this.sigModal.style.display = "flex";
+        let text = document.getElementById("sig_text")!;
+        text.textContent = "Hey " + this.gameLogic.getPlayerData().username + ", it seems like we still don't have your signature..";
     }
 
     hideSigModal() {

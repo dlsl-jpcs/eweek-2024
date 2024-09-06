@@ -14,7 +14,6 @@ export interface PlayerData {
     student_id: string;
     top_score: number;
     is_facilitator: boolean;
-    has_signed: boolean;
     course: string;
     section: string;
     code: string;
@@ -54,30 +53,38 @@ export type TokenCheckResponse = {
     user_data: PlayerData
 }
 
-export async function tokenCheck(): Promise<TokenCheckResponse> {
+export async function tokenCheck(): Promise<PlayerData> {
     if (DEBUG) {
-        return {
-            status: "verified",
-            message: "Debug mode",
-            user_data: {
-                id: 1,
-                username: "debug",
-                name: "debug",
-                email: "debug@debug.edu.ph",
-                student_id: "debug",
-                top_score: 0,
-                is_facilitator: false,
-                has_signed: false,
-                course: "debug",
-                section: "debug",
-                code: "debug"
-            }
+        let debugData: PlayerData = {
+            id: 1,
+            username: "debug",
+            name: "debug",
+            email: "debug@debug.com",
+            student_id: "debug",
+            top_score: 0,
+            is_facilitator: false,
+            course: "debug",
+            section: "debug",
+            code: "debug"
         };
+
+        return debugData;
     }
     interface Response {
         status: string,
         message: string,
-        user_data: PlayerData
+        user_data: {
+            player_id: number,
+            student_id: string,
+            code: string,
+            username: string,
+            full_name: string,
+            email: string,
+            course: string,
+            section: string,
+            is_facilitator: boolean,
+            top_score: number
+        }
     }
 
     const config: AxiosRequestConfig = {
@@ -90,11 +97,20 @@ export async function tokenCheck(): Promise<TokenCheckResponse> {
     return axios.post(SERVER_URL + "/api/v1/player/checkToken", {}, config)
         .then((response) => {
             const data = response.data as Response;
-            return {
-                status: data.status,
-                message: data.message,
-                user_data: data.user_data
+            let playerData: PlayerData = {
+                id: data.user_data.player_id,
+                username: data.user_data.username,
+                name: data.user_data.full_name,
+                email: data.user_data.email,
+                student_id: data.user_data.student_id,
+                top_score: data.user_data.top_score,
+                is_facilitator: data.user_data.is_facilitator,
+                course: data.user_data.course,
+                section: data.user_data.section,
+                code: data.user_data.code
             };
+
+            return playerData;
         });
 }
 
