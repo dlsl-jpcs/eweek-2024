@@ -6,6 +6,7 @@
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vite + TS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
 </head>
 
 <body>
@@ -26,17 +27,160 @@
       <div id="score_area">
         <h1 id="scoreVal">0</h1>
       </div>
-      <div id="auth_box">
+      <div id="auth_box" class="mfp-move-horizontal">
           <div id="auth_modal">
             <div id="auth_form">
               <h1>Enter Verification Code</h1>
+              <div id="auth_err"><i class="bi bi-info-circle-fill"></i><h1 class="auth_err_text">Invalid Code!</h1></div>
               <input type="text" id="auth_code" placeholder="" size="4" maxlength="4" style="text-transform:uppercase"/>
             </div>
             <button id="submit_code">Verify</button>
+          </div>
+      </div>
+      <div id="sig_box">
+          <div id="sig_modal">
+            <div id="sig_form">
+              <h1>Please Sign!</h1>
+              <h2>Hey Coffee, it seems like we still don't have your signature..</h2>
+              <div id="sig_err"><i class="bi bi-info-circle-fill"></i><h1 class="sig_err_text">Invalid Signature!</h1></div>
+              <div id="sig_canvas_wrapper">
+                 <canvas id="sig_canvas" width="400" height="200"></canvas>
+              </div>
+            </div>
+            <button id="retry_sig" onclick="javascript:clearArea();return false;">Clear Canvas</button>
+            <button id="submit_sig">Submit</button>
           </div>
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
 </body>
 
+<script>
+const canvas = document.getElementById('sig_canvas');
+const context = canvas.getContext('2d');
+let isDrawing = false;
+let x = 0;
+let y = 0;
+var offsetX;
+var offsetY;
+
+let drawColor = 'white';
+let drawSize = '3';
+
+function startup() {
+  canvas.addEventListener('touchstart', handleStart);
+  canvas.addEventListener('touchend', handleEnd);
+  canvas.addEventListener('touchcancel', handleCancel);
+  canvas.addEventListener('touchmove', handleMove);
+  canvas.addEventListener('mousedown', (e) => {
+    x = e.offsetX;
+    y = e.offsetY;
+    isDrawing = true;
+  });
+
+  canvas.addEventListener('mousemove', (e) => {
+    if (isDrawing) {
+      drawLine(context, x, y, e.offsetX, e.offsetY);
+      x = e.offsetX;
+      y = e.offsetY;
+    }
+  });
+
+  canvas.addEventListener('mouseup', (e) => {
+    if (isDrawing) {
+      drawLine(context, x, y, e.offsetX, e.offsetY);
+      x = 0;
+      y = 0;
+      isDrawing = false;
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", startup);
+
+const ongoingTouches = [];
+
+function handleStart(evt) {
+  evt.preventDefault();
+  const touches = evt.changedTouches;
+  offsetX = canvas.getBoundingClientRect().left;
+  offsetY = canvas.getBoundingClientRect().top;
+  for (let i = 0; i < touches.length; i++) {
+    ongoingTouches.push(copyTouch(touches[i]));
+  }
+}
+
+function handleMove(evt) {
+  evt.preventDefault();
+  const touches = evt.changedTouches;
+  for (let i = 0; i < touches.length; i++) {
+    const color = drawColor;
+    const idx = ongoingTouchIndexById(touches[i].identifier);
+    if (idx >= 0) {
+      context.beginPath();
+      context.moveTo(ongoingTouches[idx].clientX - offsetX, ongoingTouches[idx].clientY - offsetY);
+      context.lineTo(touches[i].clientX - offsetX, touches[i].clientY - offsetY);
+      context.lineWidth = drawSize;
+      context.strokeStyle = color;
+      context.lineJoin = "round";
+      context.closePath();
+      context.stroke();
+      ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+    }
+  }
+}
+
+function handleEnd(evt) {
+  evt.preventDefault();
+  const touches = evt.changedTouches;
+  for (let i = 0; i < touches.length; i++) {
+    const color = drawColor;
+    let idx = ongoingTouchIndexById(touches[i].identifier);
+    if (idx >= 0) {
+      context.lineWidth = drawSize;
+      context.fillStyle = color;
+      ongoingTouches.splice(idx, 1);  // remove it; we're done
+    }
+  }
+}
+
+function handleCancel(evt) {
+  evt.preventDefault();
+  const touches = evt.changedTouches;
+  for (let i = 0; i < touches.length; i++) {
+    let idx = ongoingTouchIndexById(touches[i].identifier);
+    ongoingTouches.splice(idx, 1);  // remove it; we're done
+  }
+}
+
+function copyTouch({ identifier, clientX, clientY }) {
+  return { identifier, clientX, clientY };
+}
+
+function ongoingTouchIndexById(idToFind) {
+  for (let i = 0; i < ongoingTouches.length; i++) {
+    const id = ongoingTouches[i].identifier;
+    if (id === idToFind) {
+      return i;
+    }
+  }
+  return -1;    // not found
+}
+
+function drawLine(context, x1, y1, x2, y2) {
+  context.beginPath();
+  context.strokeStyle = drawColor;
+  context.lineWidth = drawSize;
+  context.lineJoin = "round";
+  context.moveTo(x1, y1);
+  context.lineTo(x2, y2);
+  context.closePath();
+  context.stroke();
+}
+
+function clearArea() {
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+}
+</script>
 </html>

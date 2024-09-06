@@ -151,6 +151,72 @@ app.post('/api/v1/player/checkToken', (req: Request, res: Response) => {
     return res.end(JSON.stringify(responseJson));   
 });
 
+app.post('/api/v1/player/signatureCheck', (req: Request, res: Response) => {
+    res.setHeader('Content-Type', 'application/json');
+
+    // check if user has our session token
+	var token = req.cookies['JPCS_SESSION_TOKEN'];
+    if (!token)
+	{
+        let responseJson = 
+        {
+            status: 'no_sign',
+            message: 'Player has no signature.',
+        };
+        
+        return res.end(JSON.stringify(responseJson));   
+    }
+
+    let responseJson = 
+    {
+        status: 'no_sign',
+        message: 'Player has no signature.',
+    };
+    
+    return res.end(JSON.stringify(responseJson));   
+
+    /*let responseJson = 
+    {
+        status: 'signed',
+        message: 'Player has signed.',
+    };
+
+    return res.end(JSON.stringify(responseJson));*/
+});
+
+app.post('/api/v1/player/submitSignature', (req: Request, res: Response) => {
+    res.setHeader('Content-Type', 'application/json');
+    
+    // check if user has our session token
+	var token = req.cookies['JPCS_SESSION_TOKEN'];
+    if (!token)
+	{
+        let responseJson = 
+        {
+            status: 'invalid',
+            message: 'Player signature invalid.',
+        };
+        
+        return res.end(JSON.stringify(responseJson));   
+    }
+
+    /*let responseJson = 
+    {
+        status: 'invalid',
+        message: 'Player signature invalid.',
+    };
+    
+    return res.end(JSON.stringify(responseJson));  */ 
+
+    let responseJson = 
+    {
+        status: 'verified',
+        message: 'Player signature verified.',
+    };
+
+    return res.end(JSON.stringify(responseJson));
+});
+
 /** helper functions for those above */
 
 /**
