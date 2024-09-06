@@ -21,6 +21,8 @@ import express, { Request, Response } from 'express'
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 
+import { Database } from "bun:sqlite";
+
 const app = express()
 
 export const handler = app
@@ -30,13 +32,12 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req: Request, res: Response, next) => {
-  
-    if (req.url.startsWith('/api/v1/'))
-    {
-        let apiDebInfo = 
-        'API Request From \'' + req.headers['host'] + '\' -> ' + req.method + ' ' + req.originalUrl + '';
 
-        console.log(apiDebInfo); 
+    if (req.url.startsWith('/api/v1/')) {
+        let apiDebInfo =
+            'API Request From \'' + req.headers['host'] + '\' -> ' + req.method + ' ' + req.originalUrl + '';
+
+        console.log(apiDebInfo);
     }
 
     next()
@@ -57,9 +58,8 @@ app.post('/api/v1/player/verifyCode', (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'application/json');
 
     let code = req.body.code;
-    if (!code)
-    {
-        let responseJson = 
+    if (!code) {
+        let responseJson =
         {
             status: 'invalid',
             message: 'Code is invalid.',
@@ -69,20 +69,19 @@ app.post('/api/v1/player/verifyCode', (req: Request, res: Response) => {
     }
 
     let codeValid = true;
-    if (!codeValid)
-    {
-        let responseJson = 
+    if (!codeValid) {
+        let responseJson =
         {
             status: 'invalid',
             message: 'Code is invalid.',
         };
 
-        return res.end(JSON.stringify(responseJson));   
+        return res.end(JSON.stringify(responseJson));
     }
-    
+
     let token = 'TEST_TOKEN';
-    
-    let responseJson = 
+
+    let responseJson =
     {
         status: 'verified',
         message: 'Code is valid.',
@@ -95,9 +94,9 @@ app.post('/api/v1/player/verifyCode', (req: Request, res: Response) => {
         }
     };
 
-	res.cookie('JPCS_SESSION_TOKEN', token, { httpOnly: true, sameSite: 'strict' });
+    res.cookie('JPCS_SESSION_TOKEN', token, { httpOnly: true, sameSite: 'strict' });
 
-    return res.end(JSON.stringify(responseJson));  
+    return res.end(JSON.stringify(responseJson));
 });
 
 /**
@@ -107,7 +106,7 @@ app.post('/api/v1/player/verifyCode', (req: Request, res: Response) => {
  * the user's data will be saved to the database.
  */
 app.post('/api/v1/player/register', (req: Request, res: Response) => {
-  
+
 });
 
 /**
@@ -118,24 +117,23 @@ app.post('/api/v1/player/register', (req: Request, res: Response) => {
  * in short, this basically checks if player is logged in.
  */
 app.post('/api/v1/player/checkToken', (req: Request, res: Response) => {
-	
-	res.setHeader('Content-Type', 'application/json');
+
+    res.setHeader('Content-Type', 'application/json');
 
     // check if user has our session token
-	var token = req.cookies['JPCS_SESSION_TOKEN'];
-    if (!token)
-	{
-        let responseJson = 
+    var token = req.cookies['JPCS_SESSION_TOKEN'];
+    if (!token) {
+        let responseJson =
         {
             status: 'invalid',
             message: 'Token is invalid.',
         };
-        
-        return res.end(JSON.stringify(responseJson));   
+
+        return res.end(JSON.stringify(responseJson));
     }
 
     // if token is valid, return user data
-    let responseJson = 
+    let responseJson =
     {
         status: 'verified',
         message: 'Token is valid.',
@@ -148,8 +146,16 @@ app.post('/api/v1/player/checkToken', (req: Request, res: Response) => {
         }
     };
 
-    return res.end(JSON.stringify(responseJson));   
+    return res.end(JSON.stringify(responseJson));
 });
+
+
+
+// bun's built-in sqlite database
+const db = new Database("database.sqlite");
+
+
+
 
 /** helper functions for those above */
 
@@ -162,10 +168,57 @@ app.post('/api/v1/player/checkToken', (req: Request, res: Response) => {
  * so sql it is?
  */
 
+// valid characters
+const CODE_POINTS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
 // generate 4 letter capitalized code. make sure to check db if it's unique.
 // and don't forget to link this to a specific user.
-const generateCode = () => {
+export const generateCode = () => {
     // tyron can do this :DD
+
+    // LUHN's mod n algorithm
+    // https://en.wikipedia.org/wiki/Luhn_mod_N_algorithm
+
+    const code = generateHumanReadableCode(6);
+
+    let factor = 2;
+    let sum = 0;
+    let n = CODE_POINTS.length;
+
+    // Starting from the right and working leftwards is easier since
+    // the initial "factor" will always be "2"
+
+    for (let i = code.length - 1; i >= 0; i--) {
+        let codePoint = CODE_POINTS.indexOf(code.charAt(i));
+        let addend = factor * codePoint;
+
+        // Alternate the "factor" that each "codePoint" is multiplied by
+        factor = (factor == 2) ? 1 : 2;
+
+        // Sum the digits of the "addend" as expressed in base "n"
+        addend = Math.floor(addend / n) + (addend % n);
+        sum += addend;
+    }
+
+    // Calculate the number that must be added to the "sum"
+    // to make it divisible by "n".
+    const remainder = sum % n;
+    const checkCodePoint = (n - remainder) % n;
+
+    const checkCharacter = CODE_POINTS.charAt(checkCodePoint);
+
+    return code + checkCharacter;
+}
+
+const generateHumanReadableCode = (length: number) => {
+    const string = [];
+
+    // base 36
+    for (let i = 0; i < length; i++) {
+        string.push(CODE_POINTS.charAt(Math.floor(Math.random() * 36)));
+    }
+
+    return string.join('');
 }
 
 // get user data from db, perform prepared sql statements here.
@@ -181,16 +234,35 @@ const getPlayerDataFromDB = (code: string, token: string) => {
 const updatePlayerScore = (token: string) => {
 }
 
-// check if code is valid, then return user data as an object.
-const checkCode = (code: string) => {
-    // tyron can do this too :DD
-
+// check if code is valid, returns true if valid, false if not.
+export const checkCode = (code: string) => {
     // let data = getUserData(code, null);
     // if (!data) return null;
 
-	code.toUpperCase();
+    // code length should be 6 + 1 (check character)
+    if (code.length != 7) return false;
 
-	if (code.length < 1 || code.length > 4) return null;
+    let factor = 1;
+    let sum = 0;
+    let n = CODE_POINTS.length;
+
+    // Starting from the right, work leftwards
+    // Now, the initial "factor" will always be "1"
+    // since the last character is the check character.
+    for (let i = code.length - 1; i >= 0; i--) {
+        let codePoint = CODE_POINTS.indexOf(code.charAt(i));
+        let addend = factor * codePoint;
+
+        // Alternate the "factor" that each "codePoint" is multiplied by
+        factor = (factor == 2) ? 1 : 2;
+
+        // Sum the digits of the "addend" as expressed in base "n"
+        addend = (Math.floor(addend / n)) + (addend % n);
+        sum += addend;
+    }
+
+    let remainder = sum % n;
+    return remainder == 0;
 }
 
 // check if token is valid, then return user data as an object.
@@ -200,6 +272,6 @@ const checkToken = (token: string) => {
     // let data = getUserData(null, token);
     // if (!data) return null;
 
-	if (token.length < 0) return null;
+    if (token.length < 0) return null;
 }
 
