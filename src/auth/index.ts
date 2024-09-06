@@ -145,23 +145,30 @@ export async function submitSignature(signatureBase64: string) {
     }
 
     interface Request {
-        code: string
+        signatureBase64: string
     }
 
     const request: Request = {
-        code: ''
+        signatureBase64: signatureBase64
     }
 
     const config: AxiosRequestConfig = {
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        withCredentials: true
     }
 
-    return axios.post("http://localhost:5173/api/v1/player/submitSignature", request, config)
+    console.log('Submitting Signature in Base64 Format: ' + signatureBase64);
+
+    return axios.post(SERVER_URL + "/api/v1/player/submitSignature", request, config)
         .then((response) => {
             const data = response.data as Response;
             console.log(data);
             return data.status === "verified";
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
         });
 }
