@@ -16,7 +16,7 @@ export class MainMenu extends Entity {
 
     private authModal!: HTMLElement;
     private sigModal!: HTMLElement;
-    
+
     private debugString!: HTMLElement;
 
     constructor() {
@@ -33,7 +33,7 @@ export class MainMenu extends Entity {
         this.blur = document.getElementById("blur")!;
         this.tapToPlayLabel = document.getElementById("tap_to_play_label")!;
         this.authModal = document.getElementById("auth_box")!;
-        this.sigModal = document.getElementById("sig_box")!; 
+        this.sigModal = document.getElementById("sig_box")!;
 
         this.scoreVal = document.getElementById("scoreVal")!;
 
@@ -54,13 +54,13 @@ export class MainMenu extends Entity {
     updateDebugString(debugString: string) {
         this.debugString.innerHTML = debugString;
     }
-    
+
     registerCodeSubmitListener() {
         const submitCodeButton = document.getElementById("submit_code")!;
         submitCodeButton.addEventListener("click", async () => {
             const codeInput = document.getElementById("auth_code") as HTMLInputElement;
             if (await this.gameLogic.checkCode(codeInput.value)) {
-                
+
             }
 
             this.gameLogic.processAuth();
@@ -70,11 +70,15 @@ export class MainMenu extends Entity {
     registerSigSubmitListener() {
         const submitSigButton = document.getElementById("submit_sig")!;
         submitSigButton.addEventListener("click", async () => {
-            if (await this.gameLogic.checkSig()) {
+
+            const canvas = document.getElementById("sig_canvas") as HTMLCanvasElement;
+            const base64 = canvas.toDataURL("image/jpg");
+
+            if (await this.gameLogic.checkSig(base64)) {
                 // temporary
                 this.hideSigModal();
                 console.log("Player has signed");
-                this.authDone();  
+                this.authDone();
             }
 
             //this.gameLogic.processAuth();
@@ -87,28 +91,27 @@ export class MainMenu extends Entity {
         this.tapToPlayLabel.style.opacity = "1";
 
         // wait so clicking menu won't start game once auth done
-        setTimeout(() =>
-        { 
+        setTimeout(() => {
             document.addEventListener("click", () => {
-            console.log(this.gameLogic.getGameState());
-                
-            let boat = this.engine.findEntityByTag("player")! as Boat;
-            if (boat) {
-                boat.enableControls();
-            }
+                console.log(this.gameLogic.getGameState());
 
-            if (this.gameLogic.getGameState() === GameState.IDLE) {
-                this.gameLogic.setGameState(GameState.PLAYING);
+                let boat = this.engine.findEntityByTag("player")! as Boat;
+                if (boat) {
+                    boat.enableControls();
+                }
 
-                this.scoreVal.style.opacity = "1";
-                this.gameStartThings.style.opacity = "0";
-                this.vignette.style.opacity = "0";
-            }
-        });
+                if (this.gameLogic.getGameState() === GameState.IDLE) {
+                    this.gameLogic.setGameState(GameState.PLAYING);
+
+                    this.scoreVal.style.opacity = "1";
+                    this.gameStartThings.style.opacity = "0";
+                    this.vignette.style.opacity = "0";
+                }
+            });
 
         }, 500);
-        
-        
+
+
     }
 
     showAuthModal() {

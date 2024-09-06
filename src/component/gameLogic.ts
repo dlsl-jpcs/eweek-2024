@@ -6,6 +6,7 @@ import { Iceberg } from "../customObjects/obstacle";
 import { Return } from "three/webgpu";
 import { clamp } from "../utils";
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import { codeCheck, signatureCheck, submitSignature, tokenCheck } from "../auth";
 
 export enum GameState {
     IDLE,
@@ -28,7 +29,7 @@ export class GameLogic extends Entity {
 
     private mainMenu!: MainMenu;
     private sea!: Sea;
-    
+
     /**       debugging stuff       */
     private debugModeOn: boolean = false;
     private obstacleSpawnedDebug: number = 0;
@@ -58,7 +59,7 @@ export class GameLogic extends Entity {
             // spawn obstacles
             this.spawnObstacle(deltaTime);
         }
-        
+
         // update debug logs
         this.updateDebugLogs();
     }
@@ -72,8 +73,7 @@ export class GameLogic extends Entity {
         if (this.obstacleTimer > this.obstacleSpawnRate) {
             this.obstacleTimer = 0;
 
-            if (this.isDebugModeOn())
-            {
+            if (this.isDebugModeOn()) {
                 this.obstacleSpawnedDebug++;
             }
 
@@ -90,28 +90,37 @@ export class GameLogic extends Entity {
     }
 
     async processAuth() {
-          if (await this.isPlayerAuthorized()) {
-            
+        if (await this.isPlayerAuthorized()) {
+
             this.mainMenu.hideAuthModal();
             console.log("Player is authorized");
 
+
             if (await this.checkPlayerSignature()) {
-                
                 this.mainMenu.hideSigModal();
                 console.log("Player has signed");
                 this.mainMenu.authDone();
-            
             } else {
-                
+
                 console.log("Player has not signed");
                 this.mainMenu.showSigModal();
-            
+
             }
         }
-        else 
-        {
+        else {
             this.mainMenu.showAuthModal();
         }
+    }
+
+    async checkPlayerSignature() {
+        if (this.hasPlayerSigned()) {
+            return true;
+        }
+
+        return await signatureCheck().then((result) => {
+            this.playerSigned = result;
+            return result;
+        });
     }
 
     isPlayerAlreadyLoggedIn() {
@@ -120,149 +129,39 @@ export class GameLogic extends Entity {
 
     // check this for potential bugs @tyron
     async isPlayerAuthorized() {
-        
-        if (this.isPlayerAlreadyLoggedIn())
+
+        if (this.isPlayerAlreadyLoggedIn()) {
             return true;
-
-        interface Response {
-            status: string,
-            message: string,
-            user_data: {
-                username: string,
-                name: string,
-                email: string,
-                student_id: string,
-                top_score: number
-            }
         }
 
-        const config: AxiosRequestConfig = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
+
+        const result = await tokenCheck().catch(() => null);
+        if (result) {
+            this.playerName = result.user_data.username;
+            this.highScore = result.user_data.top_score;
+            return true;
         }
-
-        let isVerified = false;
-
-        await axios.post("http://localhost:5173/api/v1/player/checkToken", {}, config)
-            .then((response) => {
-                const data = response.data as Response;
-                console.log(data);
-                if (data.status === "verified") {
-
-                    this.playerName = data.user_data.username;
-                    this.highScore = data.user_data.top_score;
-
-                    isVerified = true;
-                } else {
-                    isVerified = false;
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
-        return isVerified;
     }
 
     // check this for potential bugs @tyron
     async checkCode(code: string) {
 
-        if (this.isPlayerAlreadyLoggedIn())
+        if (this.isPlayerAlreadyLoggedIn()) {
             return true;
-        
-        interface Response {
-            status: string,
-            message: string,
-            user_data: {
-                username: string,
-                name: string,
-                email: string,
-                student_id: string,
-                top_score: number
-            }
         }
 
-        interface Request {
-            code: string
-        }
-
-        const request: Request = {
-            code: code
-        }
-
-        const config: AxiosRequestConfig = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-
-        let isVerified = false;
-
-        await axios.post("http://localhost:5173/api/v1/player/verifyCode", request, config)
-            .then((response) => {
-                const data = response.data as Response;
-                console.log(data);
-                if (data.status === "verified") {
-                    
-                    this.playerName = data.user_data.username;
-                    this.highScore = data.user_data.top_score;
-                    
-                    isVerified = true;
-                } else {
-                    isVerified = false;
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-            
-        return isVerified;
+        return codeCheck(code).catch(() => false);
     }
 
-    async checkSig() {
-        if (this.hasPlayerSigned())
+    async checkSig(signatureBase64: string) {
+        if (this.hasPlayerSigned()) {
             return true;
-        
-        interface Response {
-            status: string,
-            message: string
         }
 
-        interface Request {
-            code: string
-        }
-
-        const request: Request = {
-            code: ''
-        }
-
-        const config: AxiosRequestConfig = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-
-        let isVerified = false;
-
-        await axios.post("http://localhost:5173/api/v1/player/submitSignature", request, config)
-            .then((response) => {
-                const data = response.data as Response;
-                console.log(data);
-                if (data.status === "verified") {
-                    
-                    this.playerSigned = true;
-
-                    isVerified = true;
-                } else {
-                    isVerified = false;
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-            
-        return isVerified;
+        return submitSignature(signatureBase64).then((result) => {
+            this.playerSigned = result;
+            return result;
+        });
     }
 
     getGameState() {
@@ -307,39 +206,4 @@ export class GameLogic extends Entity {
         return this.playerSigned;
     }
 
-    async checkPlayerSignature()
-    {
-        if (this.hasPlayerSigned())
-            return true;
-
-        interface Response {
-            status: string,
-            message: string
-        }
-
-        const config: AxiosRequestConfig = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-
-        let hasPlayerSigned = false;
-
-        await axios.post("http://localhost:5173/api/v1/player/signatureCheck", {}, config)
-            .then((response) => {
-                const data = response.data as Response;
-                console.log(data);
-                if (data.status === "signed") {
-                    hasPlayerSigned = true;
-                    this.playerSigned = true;
-                } else {
-                    hasPlayerSigned = false;
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
-        return hasPlayerSigned;
-    }
 }
