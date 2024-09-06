@@ -10,17 +10,11 @@
   },
   "module": "index.ts",
   "dependencies": {
-    "@types/cookie-parser": "^1.4.7",
-    "@types/express": "^4.17.21",
-    "axios": "^1.7.7",
-    "body-parser": "^1.20.2",
-    "cookie-parser": "^1.4.6",
     "express": "^4.19.2",
-    "three": "^0.167.1",
-    "vite-plugin-mix": "^0.4.0"
+    "three": "^0.167.1"
   },
   "devDependencies": {
-    "@types/bun": "latest",
+    "@types/bun": "^1.1.8",
     "@types/three": "^0.167.1",
     "typescript": "^5.5.3",
     "vite": "^5.4.1"
