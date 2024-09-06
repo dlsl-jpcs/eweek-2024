@@ -9,17 +9,35 @@ export class Iceberg extends Entity {
 
     mesh: THREE.Object3D;
 
+
     private sea!: Sea;
 
     constructor() {
         super("iceberg");
 
-        this.mesh = getModel(ICEBERG).scene.clone();
-        this.mesh.scale.set(15,
-            15,
-            15);
 
+        this.mesh = new THREE.Object3D();
         this.object = this.mesh;
+
+        // 0
+
+        const toRadians = (angle: number) => angle * Math.PI / 180;
+        const angle = toRadians(200);
+
+        const distance = 600;
+
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+
+        const iceberg = getModel(ICEBERG).scene.clone();
+
+        iceberg.scale.set(15, 15, 15);
+        iceberg.position.set(x, y, 0);
+        iceberg.rotation.z = angle + Math.PI / 2;
+
+        this.mesh.add(iceberg);
+
+        this.mesh.position.y = -600;
     }
 
 
@@ -30,6 +48,11 @@ export class Iceberg extends Entity {
 
 
     update(deltaTime: number): void {
-        this.mesh.position.x += (100 * this.sea.getSpeed() * deltaTime);
+        this.mesh.rotation.z -= this.sea.getSpeed() * deltaTime;
+
+        // if rotation is greater than 2PI, destroy the object
+        if (this.mesh.rotation.z < -2) {
+            this.destroy();
+        }
     }
 }
