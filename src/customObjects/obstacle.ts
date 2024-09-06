@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Entity } from "../engine/engine";
-import { getModel, ICEBERG } from "../utils/resource";
+import { getModel, ICEBERG, ISLAND } from "../utils/resource";
 import { Sea } from "./sea";
 
 
@@ -15,7 +15,6 @@ export class Iceberg extends Entity {
     constructor() {
         super("iceberg");
 
-
         this.mesh = new THREE.Object3D();
         this.object = this.mesh;
 
@@ -29,7 +28,7 @@ export class Iceberg extends Entity {
         const x = Math.cos(angle) * distance;
         const y = Math.sin(angle) * distance;
 
-        const iceberg = getModel(ICEBERG).scene.clone();
+        const iceberg = getModel(ISLAND).scene.clone();
 
         iceberg.scale.set(15, 15, 15);
         iceberg.position.set(x, y, 0);
