@@ -2,12 +2,14 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 
 export const SAILBOAT = "/sailboat.glb";
 export const ICEBERG = "/iceberg.glb";
+export const ISLAND = "/island.glb";
 
 const ASSET_LOADER = new GLTFLoader();
 
 const PRELOAD_ASSETS = [
     SAILBOAT,
     ICEBERG,
+    ISLAND
 ];
 
 const assets = new Map<string, GLTF>();

@@ -23,7 +23,7 @@ export interface PlayerData {
 export async function signatureCheck(): Promise<boolean> {
 
     if (DEBUG) {
-        return false;
+        return true;
     }
 
     interface Response {
