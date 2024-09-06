@@ -6,7 +6,7 @@ import { Iceberg } from "../customObjects/obstacle";
 import { Return } from "three/webgpu";
 import { clamp } from "../utils";
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-import { codeCheck, signatureCheck, submitSignature, tokenCheck } from "../auth";
+import { codeCheck, signatureCheck, submitSignature, tokenCheck, PlayerData } from "../auth";
 
 export enum GameState {
     IDLE,
@@ -89,25 +89,23 @@ export class GameLogic extends Entity {
         }
     }
 
-    async processAuth() {
-        if (await this.isPlayerAuthorized()) {
-
+   async processAuth() {
+          if (await this.isPlayerAuthorized()) {
+            
             this.mainMenu.hideAuthModal();
             console.log("Player is authorized");
 
-
-            if (await this.checkPlayerSignature()) {
+            if (await this.checkPlayerSignature()) {              
                 this.mainMenu.hideSigModal();
                 console.log("Player has signed");
-                this.mainMenu.authDone();
+                this.mainMenu.authDone();       
             } else {
-
                 console.log("Player has not signed");
                 this.mainMenu.showSigModal();
-
             }
         }
-        else {
+        else 
+        {
             this.mainMenu.showAuthModal();
         }
     }
@@ -134,9 +132,8 @@ export class GameLogic extends Entity {
             return true;
         }
 
-
         const result = await tokenCheck().catch(() => null);
-        if (result) {
+        if (result && result.user_data) {
             this.playerName = result.user_data.username;
             this.highScore = result.user_data.top_score;
             return true;
