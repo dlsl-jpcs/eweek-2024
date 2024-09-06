@@ -65,8 +65,9 @@ export class MainMenu extends Entity {
         const submitCodeButton = document.getElementById("submit_code")!;
         submitCodeButton.addEventListener("click", async () => {
             const codeInput = document.getElementById("auth_code") as HTMLInputElement;
-            if (await this.gameLogic.checkCode(codeInput.value)) {
-
+            if (!await this.gameLogic.checkCode(codeInput.value)) {
+                this.showAuthError("Invalid Code!");
+                return;
             }
 
             this.gameLogic.processAuth();
@@ -85,6 +86,10 @@ export class MainMenu extends Entity {
                 this.hideSigModal();
                 console.log("Player has signed");
                 this.authDone();
+            }
+            else 
+            {
+                this.showSigError("Invalid Signature!");
             }
 
             //this.gameLogic.processAuth();
