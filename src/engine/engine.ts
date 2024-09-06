@@ -64,6 +64,10 @@ export abstract class Entity {
 
     }
 
+    destroy() {
+        this.engine.removeEntity(this);
+    }
+
     /**
      * Update the entity, called every frame
      * 
@@ -101,6 +105,14 @@ export default class Engine {
         this.scene.add(entity.object);
     }
 
+    removeEntity(entity: Entity) {
+        entity.onDestroy();
+        this.scene.remove(entity.object);
+        this.entities = this.entities.filter(e => e !== entity);
+
+        console.log("Entity removed", entity.tag);
+    }
+
 
     /**
      * Initialize the scene, camera, renderer, and other properties
@@ -124,6 +136,10 @@ export default class Engine {
         camera.position.x = 0;
         camera.position.z = 0;
         camera.position.y = 300;
+
+        // camera.position.x = 0;
+        // camera.position.z = 800;
+        // camera.position.y = 100;
 
 
 

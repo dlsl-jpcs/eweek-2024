@@ -75,7 +75,7 @@ export class Sea extends Entity {
 
         var mat = new THREE.MeshPhongMaterial({
             color: color,
-            transparent: true,
+            // transparent: true,
             opacity: .8,
             flatShading: true,
         });
