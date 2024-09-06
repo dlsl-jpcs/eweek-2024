@@ -258,7 +258,7 @@ body {
   border-radius: 3px;
   margin-top: 10px;
   position: relative;
-  display: flex;
+  display: none;
 }
 
 #auth_err h1 {
@@ -378,7 +378,7 @@ body {
   border-radius: 3px;
   margin-top: 10px;
   position: relative;
-  display: flex;
+  display: none;
 }
 
 #sig_err h1 {

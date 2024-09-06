@@ -17,6 +17,9 @@ export class MainMenu extends Entity {
     private authModal!: HTMLElement;
     private sigModal!: HTMLElement;
 
+    private authError!: HTMLElement;
+    private sigError!: HTMLElement;
+
     private debugString!: HTMLElement;
 
     constructor() {
@@ -34,6 +37,9 @@ export class MainMenu extends Entity {
         this.tapToPlayLabel = document.getElementById("tap_to_play_label")!;
         this.authModal = document.getElementById("auth_box")!;
         this.sigModal = document.getElementById("sig_box")!;
+
+        this.authError = document.getElementById("auth_err")!;
+        this.sigError = document.getElementById("sig_err")!;
 
         this.scoreVal = document.getElementById("scoreVal")!;
 
@@ -128,5 +134,15 @@ export class MainMenu extends Entity {
 
     hideSigModal() {
         this.sigModal.style.display = "none";
+    }
+
+    showAuthError(error: string) {
+        this.authError.style.display = "flex";
+        this.authError.getElementsByTagName("h1")[0].textContent = error;
+    }
+
+    showSigError(error: string) {
+        this.sigError.style.display = "flex";
+        this.sigError.getElementsByTagName("h1")[0].textContent = error;
     }
 }
