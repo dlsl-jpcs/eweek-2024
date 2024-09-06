@@ -19,6 +19,7 @@ export class GameLogic extends Entity {
     private highScore: number = 0;
     private playerName: string = "";
     private gameState: GameState = GameState.IDLE;
+    private playerSigned: boolean = false;
 
     private timer: number = 0;
 
@@ -37,16 +38,12 @@ export class GameLogic extends Entity {
         super("GameLogic");
     }
 
-    // this became async.. any issues?
-    public async start(): Promise<void> {
+    public start() {
         this.gameState = GameState.IDLE;
         this.mainMenu = this.findEntityByTag("mainMenu") as MainMenu;
         this.sea = this.findEntityByTag("sea") as Sea;
 
-        if (await this.isPlayerAuthorized()) {
-            console.log("Player is authorized");
-            this.mainMenu.authDone();
-        }
+        this.processAuth();
     }
 
     override update(deltaTime: number): void {
@@ -92,10 +89,29 @@ export class GameLogic extends Entity {
         }
     }
 
-    processPlayerAuth(token: string) {
-        /**
-            here is where we verify auth etc
-         */
+    async processAuth() {
+          if (await this.isPlayerAuthorized()) {
+            
+            this.mainMenu.hideAuthModal();
+            console.log("Player is authorized");
+
+            if (await this.checkPlayerSignature()) {
+                
+                this.mainMenu.hideSigModal();
+                console.log("Player has signed");
+                this.mainMenu.authDone();
+            
+            } else {
+                
+                console.log("Player has not signed");
+                this.mainMenu.showSigModal();
+            
+            }
+        }
+        else 
+        {
+            this.mainMenu.showAuthModal();
+        }
     }
 
     isPlayerAlreadyLoggedIn() {
@@ -204,6 +220,51 @@ export class GameLogic extends Entity {
         return isVerified;
     }
 
+    async checkSig() {
+        if (this.hasPlayerSigned())
+            return true;
+        
+        interface Response {
+            status: string,
+            message: string
+        }
+
+        interface Request {
+            code: string
+        }
+
+        const request: Request = {
+            code: ''
+        }
+
+        const config: AxiosRequestConfig = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        let isVerified = false;
+
+        await axios.post("http://localhost:5173/api/v1/player/submitSignature", request, config)
+            .then((response) => {
+                const data = response.data as Response;
+                console.log(data);
+                if (data.status === "verified") {
+                    
+                    this.playerSigned = true;
+
+                    isVerified = true;
+                } else {
+                    isVerified = false;
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+            
+        return isVerified;
+    }
+
     getGameState() {
         return this.gameState;
     }
@@ -240,5 +301,45 @@ export class GameLogic extends Entity {
 
     getCurrentScore() {
         return this.currentScore;
+    }
+
+    hasPlayerSigned() {
+        return this.playerSigned;
+    }
+
+    async checkPlayerSignature()
+    {
+        if (this.hasPlayerSigned())
+            return true;
+
+        interface Response {
+            status: string,
+            message: string
+        }
+
+        const config: AxiosRequestConfig = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        let hasPlayerSigned = false;
+
+        await axios.post("http://localhost:5173/api/v1/player/signatureCheck", {}, config)
+            .then((response) => {
+                const data = response.data as Response;
+                console.log(data);
+                if (data.status === "signed") {
+                    hasPlayerSigned = true;
+                    this.playerSigned = true;
+                } else {
+                    hasPlayerSigned = false;
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+        return hasPlayerSigned;
     }
 }

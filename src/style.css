@@ -4,6 +4,8 @@ body {
   width: 100%;
   height: 100%;
 }
+
+
 #world {
   position: absolute;
   width: 100%;
@@ -163,15 +165,32 @@ body {
   filter: drop-shadow(2px 2px 0.1px rgba(0, 0, 0, 1));
 }
 
+@keyframes dialogSlide {
+    0% {
+        transform: translateX(-50px);
+        opacity: 0;
+    }
+
+    30% {
+  
+    }
+
+    100% {
+      opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 #auth_box {
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  display: flex;
+  display: none; /** flex when show, none when hide */
   justify-content: center;
   align-items: center;
+  animation: dialogSlide 0.3s ease-in;
 }
 
 #auth_modal {
@@ -217,7 +236,7 @@ body {
 }
 
 #submit_code {
-  font-family: 'Century Gothic';
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1.2rem;
   font-weight: 500;
   padding: 5px;
@@ -231,4 +250,149 @@ body {
   cursor: pointer;
   width: 100%;
   filter: drop-shadow(4px 4px 0.1px rgba(0, 0, 0, 0.8));
+}
+
+#auth_err {
+  width: 100%;
+  background-color: #6f2424;
+  border-radius: 3px;
+  margin-top: 10px;
+  position: relative;
+  display: flex;
+}
+
+#auth_err h1 {
+  padding-top: 5px;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+#auth_err i {
+  margin-top: 6px;
+  margin-left: 10px;
+  width: 20px;
+  height: 10px;
+  scale: 0.8;
+  filter: drop-shadow(3px 3px 0.1px rgba(0, 0, 0, 0.8));
+}
+
+#sig_box {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none; /** flex when show, none when hide */
+  justify-content: center;
+  align-items: center;
+  animation: dialogSlide 0.3s ease-in;
+}
+
+#sig_modal {
+  font-family: 'Century Gothic';
+  color: white; 
+}
+
+#sig_modal h1 {
+  text-shadow: 0.15rem 0.15rem 0px #121212;
+  font-size: 1.8rem;
+  margin: 0;
+  padding: 0;
+}
+
+#sig_form {
+  background-color: brown;  
+  padding: 10px;
+  border-radius: 10px;
+  border-style: solid;
+  border-width: 8px;
+  border-color: rgb(74, 20, 20);
+  filter: drop-shadow(4px 4px 0.1px rgba(0, 0, 0, 0.8));
+}
+
+#sig_form h2 {
+  margin-top: 3px;
+  font-size: 0.8rem;
+  font-weight: 200;
+}
+
+#sig_canvas_wrapper {
+  font-family: 'Century Gothic';
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin-top: 12px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 4px;
+  border-color: rgb(44, 8, 8);
+  width: calc(100% - 16px);
+  background-color: rgb(74, 16, 16);
+  height: 200px;
+  margin-right: 9px;
+  overflow: hidden;
+}
+
+#sig_form canvas {
+  background-color: rgb(74, 16, 16);
+}
+
+#submit_sig {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding: 5px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(74, 20, 20);
+  background-color: rgb(74, 20, 20);
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  filter: drop-shadow(4px 4px 0.1px rgba(0, 0, 0, 0.8));
+}
+
+#retry_sig {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding: 5px;
+  margin-top: 12px;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(74, 20, 20);
+  background-color: rgb(74, 20, 20);
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  filter: drop-shadow(4px 4px 0.1px rgba(0, 0, 0, 0.8));
+}
+
+#sig_err {
+  width: 100%;
+  background-color: #6f2424;
+  border-radius: 3px;
+  margin-top: 10px;
+  position: relative;
+  display: flex;
+}
+
+#sig_err h1 {
+  padding-top: 5px;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+#sig_err i {
+  margin-top: 6px;
+  margin-left: 10px;
+  width: 20px;
+  height: 10px;
+  scale: 0.8;
+  filter: drop-shadow(3px 3px 0.1px rgba(0, 0, 0, 0.8));
 }
