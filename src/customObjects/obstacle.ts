@@ -30,8 +30,8 @@ export class Iceberg extends Entity {
 
         const iceberg = getModel(ISLAND).scene.clone();
 
-        iceberg.scale.set(15, 15, 15);
-        iceberg.position.set(x, y, 0);
+        iceberg.scale.set(1, -1, 1);
+        iceberg.position.set(x, y+100, 0);
         iceberg.rotation.z = angle + Math.PI / 2;
 
         this.mesh.add(iceberg);
