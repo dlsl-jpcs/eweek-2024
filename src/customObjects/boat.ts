@@ -134,7 +134,11 @@ export class Boat extends Entity {
                 return;
             }
             const key = event.key;
-            if (key === "a" || key === "d") {
+            if (key === "a" && this.velocity.z > 0) {
+                this.velocity.z = 0;
+            }
+
+            if (key === "d" && this.velocity.z < 0) {
                 this.velocity.z = 0;
             }
         });
