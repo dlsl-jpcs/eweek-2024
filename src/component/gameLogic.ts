@@ -39,7 +39,7 @@ export class GameLogic extends Entity {
     private timer: number = 0;
 
     private obstacleTimer: number = 0;
-    private obstacleSpawnRate: number = 5;
+    private obstacleSpawnRate: number = 2;
 
     private mainMenu!: MainMenu;
     private sea!: Sea;
@@ -88,9 +88,9 @@ export class GameLogic extends Entity {
             // increment timer per second
             this.timer += deltaTime;
             // update the current score
-            this.currentScore = Math.round(this.timer / 10);
+            this.currentScore = this.timer;
             // update the timer on the UI
-            this.mainMenu.updateScore(this.currentScore);
+            this.mainMenu.updateScore(this.currentScore * 10);
 
             // spawn obstacles
             this.spawnObstacle(deltaTime);
@@ -121,7 +121,8 @@ export class GameLogic extends Entity {
             const upperBound = width;
 
             const randomZ = Math.random() * (upperBound - lowerBound) + lowerBound;
-            obstacle.obstacleMesh.position.z = randomZ;
+            console.log(randomZ);
+            obstacle.mesh.position.z = randomZ;
         }
     }
 
