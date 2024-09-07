@@ -7,6 +7,7 @@ import { Return } from "three/webgpu";
 import { clamp } from "../utils";
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import { codeCheck, signatureCheck, submitSignature, tokenCheck, PlayerData } from "../auth";
+import { Boat } from "../customObjects/boat";
 
 export enum GameState {
     IDLE,
@@ -39,6 +40,7 @@ export class GameLogic extends Entity {
 
     private mainMenu!: MainMenu;
     private sea!: Sea;
+    private player!: Boat;
 
     /**       debugging stuff       */
     private debugModeOn: boolean = true;
@@ -53,6 +55,7 @@ export class GameLogic extends Entity {
         this.gameState = GameState.IDLE;
         this.mainMenu = this.findEntityByTag("mainMenu") as MainMenu;
         this.sea = this.findEntityByTag("sea") as Sea;
+        this.player = this.findEntityByTag("player") as Boat;
 
         this.processAuth();
     }
@@ -167,8 +170,21 @@ export class GameLogic extends Entity {
         this.gameState = state;
 
         if (state === GameState.PLAYING) {
+            // remove obstacles, reset timer
+            const obstacles = this.engine.findEntitiesByType(Obstacle);
+            for (const obstacle of obstacles) {
+                obstacle.destroy();
+            }
+
+            this.obstacleTimer = 0;
+            this.timer = 0;
+
             this.currentScore = 0;
             this.sea.setSpeed(0.5);
+        } else if (state === GameState.OVER) {
+            this.sea.setSpeed(0);
+            this.player.disableControls();
+            this.mainMenu.showGameOver();
         }
     }
 

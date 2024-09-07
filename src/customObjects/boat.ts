@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Entity } from "../engine/engine";
 import { getModel, SAILBOAT } from "../utils/resource";
 import { Obstacle as Obstacle } from "./obstacle";
+import { GameLogic, GameState } from "../component/gameLogic";
 
 
 const gravity = 0.005;
@@ -87,6 +88,10 @@ export class Boat extends Entity {
 
     velocity: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
 
+    gameLogic!: GameLogic;
+
+    controlsEnabled: boolean = false;
+
     constructor() {
         super("player");
 
@@ -110,18 +115,12 @@ export class Boat extends Entity {
                 scale,
                 scale);
         });
-    }
 
-    override start(): void {
-
-    }
-
-    enableControls() {
-
-        console.log("Enabling controls");
-
-        // move boat left or right based on keypress
         window.addEventListener("keydown", (event) => {
+            if (!this.controlsEnabled) {
+                return;
+            }
+
             const key = event.key;
             if (key === "a") {
                 this.velocity.z = 2;
@@ -131,12 +130,32 @@ export class Boat extends Entity {
         });
 
         window.addEventListener("keyup", (event) => {
+            if (!this.controlsEnabled) {
+                return;
+            }
             const key = event.key;
             if (key === "a" || key === "d") {
                 this.velocity.z = 0;
             }
         });
     }
+
+
+
+    override start(): void {
+        this.gameLogic = this.engine.findEntityByTag("GameLogic") as GameLogic;
+    }
+
+    enableControls() {
+        this.controlsEnabled = true;
+    }
+
+    disableControls() {
+        this.velocity = new THREE.Vector3(0, 0, 0);
+        this.controlsEnabled = false;
+    }
+
+
 
     update(deltaTime: number): void {
         this.updateGravity();
@@ -203,12 +222,18 @@ export class Boat extends Entity {
     updateCollision() {
         const obstacles = this.engine.findEntitiesByType(Obstacle);
 
-        console.log(obstacles);
-
         for (const obstacle of obstacles) {
-            if (this.mesh.position.distanceTo(obstacle.object.position) < 20) {
-                console.log("Collided with obstacle");
+            const collision = this.checkCollision(obstacle as Obstacle);
+            if (collision) {
+                this.gameLogic.setGameState(GameState.OVER);
             }
         }
+    }
+
+    checkCollision(obstacle: Obstacle): boolean {
+        const boatBox = new THREE.Box3().setFromObject(this.mesh);
+        const obstacleBox = new THREE.Box3().setFromObject(obstacle.mesh);
+
+        return boatBox.intersectsBox(obstacleBox);
     }
 }

@@ -87,8 +87,7 @@ export class MainMenu extends Entity {
                 console.log("Player has signed");
                 this.authDone();
             }
-            else 
-            {
+            else {
                 this.showSigError("Invalid Signature!");
             }
 
@@ -111,7 +110,7 @@ export class MainMenu extends Entity {
                     boat.enableControls();
                 }
 
-                if (this.gameLogic.getGameState() === GameState.IDLE) {
+                if (this.gameLogic.getGameState() === GameState.IDLE || this.gameLogic.getGameState() === GameState.OVER) {
                     this.gameLogic.setGameState(GameState.PLAYING);
 
                     this.scoreVal.style.opacity = "1";
@@ -151,5 +150,12 @@ export class MainMenu extends Entity {
     showSigError(error: string) {
         this.sigError.style.display = "flex";
         this.sigError.getElementsByTagName("h1")[0].textContent = error;
+    }
+
+
+    showGameOver() {
+        this.gameStartThings.style.opacity = "1";
+        this.vignette.style.opacity = "1";
+        this.scoreVal.style.opacity = "0";
     }
 }

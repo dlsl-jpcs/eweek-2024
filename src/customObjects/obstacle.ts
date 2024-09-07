@@ -4,7 +4,6 @@ import { getModel, ICEBERG, ISLAND } from "../utils/resource";
 import { Sea } from "./sea";
 
 
-//Iceberg
 export class Obstacle extends Entity {
 
     mesh: THREE.Object3D;
