@@ -1,8 +1,8 @@
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 
-export const SAILBOAT = "/sailboat.glb";
-export const ICEBERG = "/iceberg.glb";
-export const ISLAND = "/island.glb";
+export const SAILBOAT = "sailboat.glb";
+export const ICEBERG = "iceberg.glb";
+export const ISLAND = "island.glb";
 
 const ASSET_LOADER = new GLTFLoader();
 
@@ -18,7 +18,8 @@ export async function preloadAssets() {
     const promises = [];
 
     for (const asset of PRELOAD_ASSETS) {
-        const promise = ASSET_LOADER.loadAsync(asset).then((gltf) => {
+        const path = "/eweek-2024/" + asset;
+        const promise = ASSET_LOADER.loadAsync(path).then((gltf) => {
             assets.set(asset, gltf);
         });
 

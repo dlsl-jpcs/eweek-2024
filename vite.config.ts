@@ -4,4 +4,6 @@ export default defineConfig({
   plugins: [
 
   ],
+
+  base: '/eweek-2024'
 })
