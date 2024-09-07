@@ -10,6 +10,7 @@ export class Obstacle extends Entity {
 
 
     private sea!: Sea;
+    scale: number = 1;
 
     obstacleMesh!: THREE.Object3D;
 
@@ -18,8 +19,6 @@ export class Obstacle extends Entity {
 
         this.mesh = new THREE.Object3D();
         this.object = this.mesh;
-
-        // 0
 
         const toRadians = (angle: number) => angle * Math.PI / 180;
         const angle = toRadians(200);
@@ -45,6 +44,7 @@ export class Obstacle extends Entity {
         collisionBox.min.z += 20;
         collisionBox.max.z -= 20;
         const box = new THREE.Box3Helper(collisionBox, 0xfffe6262);
+        box.visible = false;
         this.obstacleMesh = box;
 
         this.mesh.add(box);

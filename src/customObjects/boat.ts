@@ -30,7 +30,9 @@ export class BoatMarker extends Entity {
         this.mesh = new THREE.Mesh(
             new THREE.BoxGeometry(10, 10, 10),
             new THREE.MeshBasicMaterial({
-                color: 0x00ff00,
+                // color: 0x00ff00,
+                transparent: true,
+                opacity: 0,
             }),
         );
 
@@ -112,10 +114,11 @@ export class Boat extends Entity {
         boat.position.y = -100;
         boat.position.x = -10;
 
-        const scale = 10;
-        boat.scale.set(scale,
-            scale,
-            scale);
+        const scale = document.documentElement.clientWidth / 84;
+        this.scale = Math.min(scale, 10);
+        boat.scale.set(this.scale,
+            this.scale,
+            this.scale);
         this.mesh.add(boat);
 
         this.boatMesh = boat;
@@ -123,8 +126,8 @@ export class Boat extends Entity {
 
         // listen to window resize, so we can rescale the boat
         window.addEventListener("resize", () => {
-            let scale = window.innerWidth / 84;
-            this.scale = Math.min(scale, 15);
+            let scale = document.documentElement.clientWidth / 84;
+            this.scale = Math.min(scale, 10);
             boat.scale.set(this.scale,
                 this.scale,
                 this.scale);
@@ -178,13 +181,14 @@ export class Boat extends Entity {
         const collisionBox = new THREE.Box3().setFromObject(this.boatMesh);
 
         // adjust the collision box, take into account the scale
-        collisionBox.min.z += 20 * this.scale;
-        collisionBox.max.z -= 20 * this.scale;
+        collisionBox.min.z += 2 * this.scale;
+        collisionBox.max.z -= 2 * this.scale;
 
-        collisionBox.min.x += 30 * this.scale;
-        collisionBox.max.x -= 30 * this.scale;
+        collisionBox.min.x += 1.2 * this.scale;
+        collisionBox.max.x -= 1.2 * this.scale;
 
-        const box = new THREE.Box3Helper(collisionBox, 0xfffe6262);
+        const box = new THREE.Box3Helper(collisionBox);
+        box.visible = false;
         this.collisionBox = box;
 
         this.mesh.add(box);
