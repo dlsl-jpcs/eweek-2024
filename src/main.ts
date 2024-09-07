@@ -9,34 +9,40 @@ import { MainMenu } from './component/mainMenu';
 
 import { preloadAssets } from './utils/resource';
 
-// ASSET PRELOAD
-// TODO: Loading screen ?
-await preloadAssets();
+
+async function main() {
+  // ASSET PRELOAD
+  // TODO: Loading screen ?
+  await preloadAssets();
 
 
-const engine = new Engine();
+  const engine = new Engine();
 
-engine.instantiate(MainMenu);
+  engine.instantiate(MainMenu);
 
-engine.instantiate(GameLogic);
-
-
-
-engine.instantiate(Sea);
-
-engine.instantiate(Boat);
+  engine.instantiate(GameLogic);
 
 
-engine.instantiate(BoatMarker);
-engine.instantiate(BoatMarker, true);
+
+  engine.instantiate(Sea);
+
+  engine.instantiate(Boat);
 
 
-engine.init();
+  engine.instantiate(BoatMarker);
+  engine.instantiate(BoatMarker, true);
 
 
-/// ------ END OF COFFEE'S DIRTY ASS SPAGHETTI CODE ------
+  engine.init();
 
-setupLighting(engine);
 
-engine.start();
+  /// ------ END OF COFFEE'S DIRTY ASS SPAGHETTI CODE ------
 
+  setupLighting(engine);
+
+  engine.start();
+
+
+}
+
+main();
