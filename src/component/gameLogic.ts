@@ -113,15 +113,15 @@ export class GameLogic extends Entity {
                 this.obstacleSpawnedDebug++;
             }
 
-            this.engine.instantiate(Obstacle);
+            const obstacle = this.engine.instantiate(Obstacle);
             // iceberg.object.position.set(-300, 0, 0)
 
-            // const width = this.sea.getWidth() / 2;
-            // const lowerBound = -width;
-            // const upperBound = width;
+            const width = this.sea.getWidth() / 2;
+            const lowerBound = -width;
+            const upperBound = width;
 
-            // const randomZ = Math.random() * (upperBound - lowerBound) + lowerBound;
-            // iceberg.object.position.z = randomZ;
+            const randomZ = Math.random() * (upperBound - lowerBound) + lowerBound;
+            obstacle.obstacleMesh.position.z = randomZ;
         }
     }
 
