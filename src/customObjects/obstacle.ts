@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Entity } from "../engine/engine";
-import { getModel, ICEBERG, ISLAND } from "../utils/resource";
+import { getModel, ISLAND } from "../utils/resource";
 import { Sea } from "./sea";
 
 

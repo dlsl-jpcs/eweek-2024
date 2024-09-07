@@ -38,7 +38,7 @@ export class BoatMarker extends Entity {
         this.object = this.mesh;
     }
 
-    update(deltaTime: number): void {
+    update(_deltaTime: number): void {
         if (!this.engine) {
             return;
         }
@@ -203,7 +203,7 @@ export class Boat extends Entity {
 
 
 
-    update(deltaTime: number): void {
+    update(_deltaTime: number): void {
         this.updateRotation();
         this.updateCollision();
         this.updateGravity();

@@ -1,11 +1,7 @@
-import * as THREE from "three";
 import { Entity } from "../engine/engine";
 import { MainMenu } from "./mainMenu";
 import { Sea } from "../customObjects/sea";
 import { Obstacle } from "../customObjects/obstacle";
-import { Return } from "three/webgpu";
-import { clamp } from "../utils";
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import { codeCheck, signatureCheck, submitSignature, tokenCheck, PlayerData } from "../auth";
 import { Boat } from "../customObjects/boat";
 
@@ -90,7 +86,7 @@ export class GameLogic extends Entity {
                 this.obstacleSpawnedDebug++;
             }
 
-            const iceberg = this.engine.instantiate(Obstacle);
+            this.engine.instantiate(Obstacle);
             // iceberg.object.position.set(-300, 0, 0)
 
             // const width = this.sea.getWidth() / 2;

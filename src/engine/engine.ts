@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 
-import { Position, Size } from '../utils';
-import { BoatMarker } from '../customObjects/boat';
 
 export abstract class Entity {
 
@@ -89,10 +87,7 @@ export default class Engine {
     private renderer!: THREE.WebGLRenderer;
     private clock!: THREE.Clock;
 
-    // the dom element where the scene will be displayed
-    private container!: HTMLElement;
 
-    private lastTime: number = 0;
 
     private entities: Entity[] = [];
 
@@ -177,7 +172,6 @@ export default class Engine {
         container.appendChild(renderer.domElement);
 
         this.renderer = renderer;
-        this.container = container;
 
         this.clock = new THREE.Clock();
 

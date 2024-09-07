@@ -1,18 +1,13 @@
-import {
-  GLTFLoader
-} from 'three/addons/loaders/GLTFLoader.js';
 
 import './style.css';
 import Engine from './engine/engine';
 import { Sea } from './customObjects/sea';
 import { Boat, BoatMarker } from './customObjects/boat';
 import { setupLighting } from './customObjects/lights';
-import { Obstacle } from './customObjects/obstacle';
 import { GameLogic } from './component/gameLogic';
 import { MainMenu } from './component/mainMenu';
 
-import * as THREE from 'three';
-import { getModel, preloadAssets, SAILBOAT } from './utils/resource';
+import { preloadAssets } from './utils/resource';
 
 // ASSET PRELOAD
 // TODO: Loading screen ?

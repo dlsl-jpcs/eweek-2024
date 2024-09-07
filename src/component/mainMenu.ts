@@ -1,13 +1,11 @@
 import { Boat } from "../customObjects/boat";
 import { Entity } from "../engine/engine";
 import { GameLogic, GameState } from "./gameLogic";
-import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 
 export class MainMenu extends Entity {
 
     private gameLogic!: GameLogic;
 
-    private ui!: HTMLElement;
     private gameStartThings!: HTMLElement;
     private scoreVal!: HTMLElement;
     private vignette!: HTMLElement;
@@ -29,7 +27,6 @@ export class MainMenu extends Entity {
     public start(): void {
         this.gameLogic = this.findEntityByTag("GameLogic") as GameLogic;
 
-        this.ui = document.getElementById("ui")!;
         this.gameStartThings = document.getElementById("game_start_things")!;
 
         this.vignette = document.getElementById("vignette")!;
@@ -49,7 +46,7 @@ export class MainMenu extends Entity {
         this.registerSigSubmitListener();
     }
 
-    update(deltaTime: number): void {
+    update(_deltaTime: number): void {
 
     }
 
