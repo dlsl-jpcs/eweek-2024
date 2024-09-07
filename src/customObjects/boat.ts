@@ -154,6 +154,25 @@ export class Boat extends Entity {
             }
         });
 
+
+        // control the boat with device tilt
+        window.addEventListener("deviceorientation", (event) => {
+            if (!this.controlsEnabled) {
+                return;
+            }
+
+            const tilt = event.gamma!;
+
+            if (tilt < -10) {
+                this.velocity.z = -2;
+            } else if (tilt > 10) {
+                this.velocity.z = 2;
+            } else {
+                this.velocity.z = 0;
+            }
+        });
+
+
         const collisionBox = new THREE.Box3().setFromObject(this.boatMesh);
 
         // adjust the collision box, take into account the scale
