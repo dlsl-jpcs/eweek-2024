@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { Entity } from "../engine/engine";
 import { MainMenu } from "./mainMenu";
 import { Sea } from "../customObjects/sea";
-import { Iceberg } from "../customObjects/obstacle";
+import { Obstacle } from "../customObjects/obstacle";
 import { Return } from "three/webgpu";
 import { clamp } from "../utils";
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
@@ -87,7 +87,7 @@ export class GameLogic extends Entity {
                 this.obstacleSpawnedDebug++;
             }
 
-            const iceberg = this.engine.instantiate(Iceberg);
+            const iceberg = this.engine.instantiate(Obstacle);
             // iceberg.object.position.set(-300, 0, 0)
 
             // const width = this.sea.getWidth() / 2;
@@ -99,23 +99,22 @@ export class GameLogic extends Entity {
         }
     }
 
-   async processAuth() {
-          if (await this.isPlayerAuthorized()) {
-            
+    async processAuth() {
+        if (await this.isPlayerAuthorized()) {
+
             this.mainMenu.hideAuthModal();
             console.log("Player is authorized");
 
-            if (await this.checkPlayerSignature()) {              
+            if (await this.checkPlayerSignature()) {
                 this.mainMenu.hideSigModal();
                 console.log("Player has signed");
-                this.mainMenu.authDone();       
+                this.mainMenu.authDone();
             } else {
                 console.log("Player has not signed");
                 this.mainMenu.showSigModal();
             }
         }
-        else 
-        {
+        else {
             this.mainMenu.showAuthModal();
         }
     }

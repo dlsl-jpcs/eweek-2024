@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { Entity } from "../engine/engine";
 import { getModel, SAILBOAT } from "../utils/resource";
+import { Obstacle as Obstacle } from "./obstacle";
 
 
 const gravity = 0.005;
@@ -112,14 +113,14 @@ export class Boat extends Entity {
     }
 
     override start(): void {
-       
+
     }
 
     enableControls() {
 
         console.log("Enabling controls");
-        
-         // move boat left or right based on keypress
+
+        // move boat left or right based on keypress
         window.addEventListener("keydown", (event) => {
             const key = event.key;
             if (key === "a") {
@@ -140,6 +141,7 @@ export class Boat extends Entity {
     update(deltaTime: number): void {
         this.updateGravity();
         this.updateRotation();
+        this.updateCollision();
     }
 
     updateGravity() {
@@ -195,6 +197,18 @@ export class Boat extends Entity {
             this.mesh.rotation.x += 0.001;
         } else if (this.mesh.rotation.x > 0) {
             this.mesh.rotation.x -= 0.001;
+        }
+    }
+
+    updateCollision() {
+        const obstacles = this.engine.findEntitiesByType(Obstacle);
+
+        console.log(obstacles);
+
+        for (const obstacle of obstacles) {
+            if (this.mesh.position.distanceTo(obstacle.object.position) < 20) {
+                console.log("Collided with obstacle");
+            }
         }
     }
 }

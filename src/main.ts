@@ -7,7 +7,7 @@ import Engine from './engine/engine';
 import { Sea } from './customObjects/sea';
 import { Boat, BoatMarker } from './customObjects/boat';
 import { setupLighting } from './customObjects/lights';
-import { Iceberg } from './customObjects/obstacle';
+import { Obstacle } from './customObjects/obstacle';
 import { GameLogic } from './component/gameLogic';
 import { MainMenu } from './component/mainMenu';
 

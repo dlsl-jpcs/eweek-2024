@@ -5,7 +5,7 @@ import { Sea } from "./sea";
 
 
 //Iceberg
-export class Iceberg extends Entity {
+export class Obstacle extends Entity {
 
     mesh: THREE.Object3D;
 
@@ -13,7 +13,7 @@ export class Iceberg extends Entity {
     private sea!: Sea;
 
     constructor() {
-        super("iceberg");
+        super("obstacle");
 
         this.mesh = new THREE.Object3D();
         this.object = this.mesh;
@@ -31,7 +31,7 @@ export class Iceberg extends Entity {
         const iceberg = getModel(ISLAND).scene.clone();
 
         iceberg.scale.set(1, -1, 1);
-        iceberg.position.set(x, y+100, 0);
+        iceberg.position.set(x, y + 100, 0);
         iceberg.rotation.z = angle + Math.PI / 2;
 
         this.mesh.add(iceberg);
