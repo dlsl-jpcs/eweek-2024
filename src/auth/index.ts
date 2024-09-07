@@ -4,7 +4,7 @@ export const SERVER_URL = "http://localhost:3000";
 
 // Set to true to enable debug mode
 // This will ignore the signature check and token check
-const DEBUG = false;
+const DEBUG = true;
 
 export interface PlayerData {
     id: number;
