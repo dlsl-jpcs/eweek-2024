@@ -118,8 +118,8 @@ export default class Engine {
      */
     init() {
 
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
+        this.width = document.documentElement.clientWidth;
+        this.height = document.documentElement.clientHeight;
 
         this.aspectRatio = this.width / this.height;
         this.fieldOfView = 60;
@@ -180,8 +180,8 @@ export default class Engine {
 
     handleWindowResize() {
         // update height and width of the renderer and the camera
-        this.height = window.innerHeight;
-        this.width = window.innerWidth;
+        this.width = document.documentElement.clientWidth;
+        this.height = document.documentElement.clientHeight;
         this.renderer.setSize(this.width, this.height);
         this.camera.aspect = this.width / this.height;
         this.camera.updateProjectionMatrix();
