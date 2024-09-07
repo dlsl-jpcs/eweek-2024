@@ -11,6 +11,8 @@ export class Obstacle extends Entity {
 
     private sea!: Sea;
 
+    obstacleMesh!: THREE.Object3D;
+
     constructor() {
         super("obstacle");
 
@@ -34,23 +36,39 @@ export class Obstacle extends Entity {
         iceberg.rotation.z = angle + Math.PI / 2;
 
         this.mesh.add(iceberg);
-
         this.mesh.position.y = -600;
+
+        const collisionBox = new THREE.Box3().setFromObject(iceberg);
+        collisionBox.min.y += 200;
+        collisionBox.min.x += 50;
+        collisionBox.max.x -= 100;
+        collisionBox.min.z += 20;
+        collisionBox.max.z -= 20;
+        const box = new THREE.Box3Helper(collisionBox, 0xfffe6262);
+        this.obstacleMesh = box;
+
+        this.mesh.add(box);
     }
 
 
     public start(): void {
-        this.sea = this.findEntityByTag("sea") as Sea;
+        this.sea = this.findEntityByTag("sea") as Sea
     }
 
+    public onDestroy(): void {
+        this.engine.getCurrentScene().remove(this.obstacleMesh);
+    }
 
 
     update(deltaTime: number): void {
         this.mesh.rotation.z -= this.sea.getSpeed() * deltaTime;
 
-        // if rotation is greater than 2PI, destroy the object
-        if (this.mesh.rotation.z < -2) {
+        if (this.mesh.rotation.z < -2.2) {
             this.destroy();
         }
+    }
+
+    getCollisionBox(): THREE.Box3 {
+        return new THREE.Box3().setFromObject(this.obstacleMesh);
     }
 }

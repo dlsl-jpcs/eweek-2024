@@ -100,6 +100,10 @@ export default class Engine {
 
     }
 
+    getRenderer() {
+        return this.renderer;
+    }
+
     addEntity(entity: Entity) {
         this.entities.push(entity);
         this.scene.add(entity.object);

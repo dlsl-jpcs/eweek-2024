@@ -75,7 +75,7 @@ export class BoatMarker extends Entity {
             this.velocity.y = 0;
         }
 
-        const boatPos = boat.mesh.position;
+        const boatPos = boat.object.position;
         this.mesh.position.set(this.mesh.position.x, this.mesh.position.y, boatPos.z);
     }
 }
@@ -85,6 +85,8 @@ export class BoatMarker extends Entity {
  */
 export class Boat extends Entity {
     mesh: THREE.Object3D;
+    boatMesh!: THREE.Object3D;
+    collisionBox!: THREE.Box3Helper;
 
     velocity: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
 
@@ -92,28 +94,37 @@ export class Boat extends Entity {
 
     controlsEnabled: boolean = false;
 
+
+
+    scale: number = 1;
+
     constructor() {
         super("player");
 
-        this.mesh = getModel(SAILBOAT).scene.clone();
-
+        this.mesh = new THREE.Object3D();
         this.mesh.position.y = 100;
         this.mesh.position.x = -100;
 
+        const boat = getModel(SAILBOAT).scene.clone();
+        boat.position.y = -100;
+        boat.position.x = -10;
+
         const scale = 10;
-        this.mesh.scale.set(scale,
+        boat.scale.set(scale,
             scale,
             scale);
+        this.mesh.add(boat);
 
+        this.boatMesh = boat;
         this.object = this.mesh;
 
         // listen to window resize, so we can rescale the boat
         window.addEventListener("resize", () => {
             let scale = window.innerWidth / 84;
-            scale = Math.min(scale, 15);
-            this.mesh.scale.set(scale,
-                scale,
-                scale);
+            this.scale = Math.min(scale, 15);
+            boat.scale.set(this.scale,
+                this.scale,
+                this.scale);
         });
 
         window.addEventListener("keydown", (event) => {
@@ -142,12 +153,24 @@ export class Boat extends Entity {
                 this.velocity.z = 0;
             }
         });
+
+        const collisionBox = new THREE.Box3().setFromObject(this.boatMesh);
+
+        // adjust the collision box, take into account the scale
+        collisionBox.min.z += 20 * this.scale;
+        collisionBox.max.z -= 20 * this.scale;
+        const box = new THREE.Box3Helper(collisionBox, 0xfffe6262);
+        this.collisionBox = box;
+
+        this.mesh.add(box);
     }
 
 
 
     override start(): void {
         this.gameLogic = this.engine.findEntityByTag("GameLogic") as GameLogic;
+
+
     }
 
     enableControls() {
@@ -162,33 +185,10 @@ export class Boat extends Entity {
 
 
     update(deltaTime: number): void {
-        this.updateGravity();
         this.updateRotation();
         this.updateCollision();
-    }
-
-    updateGravity() {
-        this.velocity.y -= gravity;
-        this.mesh.position.add(this.velocity);
-
-        if (this.mesh.position.y < 0) {
-            this.mesh.position.y = 0;
-            this.velocity.y = 0;
-        }
-
-        const ray = new THREE.Raycaster(
-            this.mesh.position,
-            new THREE.Vector3(0, -1, 0),
-        );
-
-        const sea = this.engine.findEntityByTag("sea")!;
-        const intersectObjects = ray.intersectObject(sea.object);
-
-        if (intersectObjects.length > 0) {
-            const intersect = intersectObjects[0];
-            this.mesh.position.y = intersect.point.y + 18;
-            this.velocity.y = 0;
-        }
+        this.updateGravity();
+        this.naturalCorrection();
     }
 
     /**
@@ -207,19 +207,27 @@ export class Boat extends Entity {
         // flip the angle so that the boat is facing the right direction
 
 
-        this.mesh.rotation.z = angle * 2;
+        this.boatMesh.rotation.z = angle * 2;
+
+        // rotate the boat so that it is perpendicular to the wave
+        if (this.velocity.z > 0 && this.boatMesh.rotation.y < 0.1) {
+            this.boatMesh.rotation.y += 0.005;
+        } else if (this.velocity.z < 0 && this.boatMesh.rotation.y > -0.1) {
+            this.boatMesh.rotation.y -= 0.005;
+        }
+    }
 
 
-        // when moving left or right, face the direction of movement (using the velocity)
-        // rotate it slightly to make it look like it's leaning
-        if (this.velocity.z < 0 && this.mesh.rotation.x > -0.3) {
-            this.mesh.rotation.x -= 0.01;
-        } else if (this.velocity.z > 0 && this.mesh.rotation.x < 0.3) {
-            this.mesh.rotation.x += 0.01;
-        } else if (this.mesh.rotation.x < 0) {
-            this.mesh.rotation.x += 0.001;
-        } else if (this.mesh.rotation.x > 0) {
-            this.mesh.rotation.x -= 0.001;
+    /**
+     * The boat should attempt to correct (straighten) itself naturally
+     */
+    naturalCorrection() {
+        if (this.velocity.z === 0) {
+            if (this.boatMesh.rotation.y < 0) {
+                this.boatMesh.rotation.y += 0.005;
+            } else if (this.boatMesh.rotation.y > 0) {
+                this.boatMesh.rotation.y -= 0.005;
+            }
         }
     }
 
@@ -234,10 +242,37 @@ export class Boat extends Entity {
         }
     }
 
-    checkCollision(obstacle: Obstacle): boolean {
-        const boatBox = new THREE.Box3().setFromObject(this.mesh);
-        const obstacleBox = new THREE.Box3().setFromObject(obstacle.mesh);
+    updateGravity() {
+        this.velocity.y -= gravity;
+        this.mesh.position.add(this.velocity);
 
-        return boatBox.intersectsBox(obstacleBox);
+        if (this.mesh.position.y < 0) {
+            this.mesh.position.y = 0;
+            this.velocity.y = 0;
+        }
+
+        const ray = new THREE.Raycaster(
+            this.mesh.position,
+            new THREE.Vector3(0, -1, 0),
+        );
+
+        const sea = this.engine.findEntityByTag("sea")!;
+        const intersectObjects = ray.intersectObject(sea.object);
+        if (intersectObjects.length > 0) {
+            const intersect = intersectObjects[0];
+            this.mesh.position.y = intersect.point.y + 120;
+            this.velocity.y = 0;
+        }
+    }
+
+    checkCollision(obstacle: Obstacle): boolean {
+        // mesh collision
+        const thisMesh = this.collisionBox;
+        const otherMesh = obstacle.getCollisionBox();
+
+        const thisBox = new THREE.Box3().setFromObject(thisMesh);
+        const otherBox = otherMesh;
+
+        return thisBox.intersectsBox(otherBox);
     }
 }
