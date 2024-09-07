@@ -3,9 +3,10 @@ import { Entity } from "../engine/engine";
 import { getModel, SAILBOAT } from "../utils/resource";
 import { Obstacle as Obstacle } from "./obstacle";
 import { GameLogic, GameState } from "../component/gameLogic";
+import { MainMenu } from "../component/mainMenu";
 
 
-const gravity = 0.005;
+const gravity = 0.05;
 
 /**
  * The markers that indicate the front and back of the boat.
@@ -94,6 +95,8 @@ export class Boat extends Entity {
 
     controlsEnabled: boolean = false;
 
+    mainMenu!: MainMenu;
+
 
 
     scale: number = 1;
@@ -152,6 +155,10 @@ export class Boat extends Entity {
             if (key === "d" && this.velocity.z < 0) {
                 this.velocity.z = 0;
             }
+
+            if (key === "y") {
+                this.velocity.y = 3;
+            }
         });
 
 
@@ -188,7 +195,7 @@ export class Boat extends Entity {
     override start(): void {
         this.gameLogic = this.engine.findEntityByTag("GameLogic") as GameLogic;
 
-
+        this.mainMenu = this.engine.findEntityByTag("mainMenu") as MainMenu;
     }
 
     enableControls() {
@@ -287,8 +294,13 @@ export class Boat extends Entity {
         const intersectObjects = ray.intersectObject(sea.object);
         if (intersectObjects.length > 0) {
             const intersect = intersectObjects[0];
-            this.mesh.position.y = intersect.point.y + 120;
-            this.velocity.y = 0;
+
+            this.mainMenu.updateDebugString("intersect" + intersect.distance);
+
+            if (intersect.distance < 120) {
+                this.mesh.position.y = intersect.point.y + 120;
+                this.velocity.y = 0;
+            }
         }
     }
 

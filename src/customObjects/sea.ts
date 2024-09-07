@@ -65,9 +65,9 @@ export class Sea extends Entity {
                 // a random angle
                 ang: Math.random() * Math.PI * 2,
                 // a random distance
-                amp: 3 + Math.random() * 3.5,
+                amp: 10 + Math.random() * 3.5,
                 // a random speed between 0.016 and 0.048 radians / frame
-                speed: 0.016 + Math.random() * 0.032,
+                speed: 0.02,
 
 
             });
@@ -75,7 +75,7 @@ export class Sea extends Entity {
 
         var mat = new THREE.MeshPhongMaterial({
             color: color,
-            transparent: true,
+            transparent: false,
             opacity: .8,
             flatShading: true,
         });

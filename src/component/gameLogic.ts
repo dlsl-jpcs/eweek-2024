@@ -204,7 +204,7 @@ export class GameLogic extends Entity {
             this.timer = 0;
 
             this.currentScore = 0;
-            this.sea.setSpeed(0.5);
+            this.sea.setSpeed(0.3);
         } else if (state === GameState.OVER) {
             this.sea.setSpeed(0);
             this.player.disableControls();
