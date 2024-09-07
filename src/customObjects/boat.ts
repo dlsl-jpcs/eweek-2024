@@ -168,13 +168,15 @@ export class Boat extends Entity {
 
 
 
-
-
         const collisionBox = new THREE.Box3().setFromObject(this.boatMesh);
 
         // adjust the collision box, take into account the scale
         collisionBox.min.z += 20 * this.scale;
         collisionBox.max.z -= 20 * this.scale;
+
+        collisionBox.min.x += 30 * this.scale;
+        collisionBox.max.x -= 30 * this.scale;
+
         const box = new THREE.Box3Helper(collisionBox, 0xfffe6262);
         this.collisionBox = box;
 

@@ -4,7 +4,7 @@ import { Sea } from "../customObjects/sea";
 import { Obstacle } from "../customObjects/obstacle";
 import { codeCheck, signatureCheck, submitSignature, tokenCheck, PlayerData } from "../auth";
 import { Boat } from "../customObjects/boat";
-import { getOrientationPermissionState, requestOrientationPermissions } from "../utils";
+import { getOrientationPermissionState } from "../utils";
 
 export enum GameState {
     IDLE,
