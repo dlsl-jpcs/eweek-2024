@@ -1,5 +1,6 @@
 import { Boat } from "../customObjects/boat";
 import { Entity } from "../engine/engine";
+import { requestOrientationPermissions } from "../utils";
 import { GameLogic, GameState } from "./gameLogic";
 
 export class MainMenu extends Entity {
@@ -18,6 +19,10 @@ export class MainMenu extends Entity {
     private authError!: HTMLElement;
     private sigError!: HTMLElement;
 
+    private permissionsModal!: HTMLElement;
+
+    private alternateControlsModal!: HTMLElement;
+
     private debugString!: HTMLElement;
 
     constructor() {
@@ -34,6 +39,32 @@ export class MainMenu extends Entity {
         this.tapToPlayLabel = document.getElementById("tap_to_play_label")!;
         this.authModal = document.getElementById("auth_box")!;
         this.sigModal = document.getElementById("sig_box")!;
+        this.permissionsModal = document.getElementById("permissions_box")!;
+        this.alternateControlsModal = document.getElementById("alternate_controls_box")!;
+
+        this.hidePermissionsModal();
+        this.hideAlternateControlsModal();
+
+        document.getElementById("grant_permissions")!.addEventListener("click", async () => {
+            const result = await requestOrientationPermissions();
+            if (result === "granted") {
+                this.hidePermissionsModal();
+                this.gameLogic.processAuth();
+                return;
+            }
+
+            if (result === "denied") {
+                // show alternate controls
+                this.showAlternateControlsModal();
+                this.hidePermissionsModal();
+                return;
+            }
+        });
+
+        document.getElementById("alternate_okay")!.addEventListener("click", () => {
+            this.hideAlternateControlsModal();
+            this.gameLogic.processAuth();
+        });
 
         this.authError = document.getElementById("auth_err")!;
         this.sigError = document.getElementById("sig_err")!;
@@ -44,6 +75,8 @@ export class MainMenu extends Entity {
 
         this.registerCodeSubmitListener();
         this.registerSigSubmitListener();
+
+        this.showPermissionsModal();
     }
 
     update(_deltaTime: number): void {
@@ -154,5 +187,21 @@ export class MainMenu extends Entity {
         this.gameStartThings.style.opacity = "1";
         this.vignette.style.opacity = "1";
         this.scoreVal.style.opacity = "0";
+    }
+
+    showAlternateControlsModal() {
+        this.alternateControlsModal.style.display = "flex";
+    }
+
+    hideAlternateControlsModal() {
+        this.alternateControlsModal.style.display = "none";
+    }
+
+    showPermissionsModal() {
+        this.permissionsModal.style.display = "flex";
+    }
+
+    hidePermissionsModal() {
+        this.permissionsModal.style.display = "none";
     }
 }

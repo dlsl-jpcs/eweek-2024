@@ -21,3 +21,50 @@ export function randomIntRange(min: number, max: number) {
 export function clamp(input: number, min: number, max: number) {
   return Math.min(Math.max(input, min), max);
 };
+
+
+interface DeviceOrientationEventiOS extends DeviceOrientationEvent {
+  requestPermission?: () => Promise<'granted' | 'denied'>;
+}
+
+const requestPermission = (DeviceOrientationEvent as unknown as DeviceOrientationEventiOS).requestPermission;
+const iOS = typeof requestPermission === 'function';
+
+export async function getOrientationPermissionState(): Promise<'granted' | 'denied' | 'prompt'> {
+  if (!iOS) {
+    return 'granted';
+  }
+
+  // check local storage
+  const permission = localStorage.getItem('orientationPermission');
+  if (permission === 'denied') {
+    return 'denied';
+  }
+
+  if (permission === 'granted') {
+    return 'granted';
+  }
+
+  return 'prompt';
+}
+
+export async function requestOrientationPermissions(): Promise<'granted' | 'denied'> {
+  // short-circuit if not iOS
+  if (!iOS) {
+    return 'granted';
+  }
+
+  // first try to get from saved local storage
+  const permission = localStorage.getItem('orientationPermission');
+  if (permission === 'denied') {
+    return 'denied';
+  }
+
+  // if not, request permission
+  const response = await requestPermission();
+
+  // save to local storage
+  localStorage.setItem('orientationPermission', response);
+
+  return response;
+}

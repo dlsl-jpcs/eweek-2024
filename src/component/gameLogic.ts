@@ -4,12 +4,19 @@ import { Sea } from "../customObjects/sea";
 import { Obstacle } from "../customObjects/obstacle";
 import { codeCheck, signatureCheck, submitSignature, tokenCheck, PlayerData } from "../auth";
 import { Boat } from "../customObjects/boat";
+import { getOrientationPermissionState, requestOrientationPermissions } from "../utils";
 
 export enum GameState {
     IDLE,
     PAUSED,
     OVER,
     PLAYING,
+}
+
+export enum Control {
+    TOUCH,
+    MOUSE,
+    KEYBOARD
 }
 
 export class GameLogic extends Entity {
@@ -53,8 +60,28 @@ export class GameLogic extends Entity {
         this.sea = this.findEntityByTag("sea") as Sea;
         this.player = this.findEntityByTag("player") as Boat;
 
+        this.checkPermissions();
+    }
+
+    async checkPermissions() {
+
+        const permission = await getOrientationPermissionState();
+        if (permission === 'prompt') {
+            this.mainMenu.showPermissionsModal();
+            return;
+        } else if (permission === 'denied') {
+            this.mainMenu.hidePermissionsModal();
+            this.mainMenu.showAlternateControlsModal();
+            return;
+        }
+
+        // granted
+
+        this.mainMenu.hidePermissionsModal();
         this.processAuth();
     }
+
+
 
     override update(deltaTime: number): void {
         if (this.gameState === GameState.PLAYING) {
@@ -70,7 +97,7 @@ export class GameLogic extends Entity {
         }
 
         // update debug logs
-        this.updateDebugLogs();
+        // this.updateDebugLogs();
     }
 
     /**

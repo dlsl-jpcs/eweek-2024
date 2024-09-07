@@ -155,22 +155,19 @@ export class Boat extends Entity {
         });
 
 
-        // control the boat with device tilt
-        window.addEventListener("deviceorientation", (event) => {
+        // control the boat with device tilt, use devicemotion
+        window.addEventListener("devicemotion", (event) => {
             if (!this.controlsEnabled) {
                 return;
             }
 
-            const tilt = event.gamma!;
-
-            if (tilt < -10) {
-                this.velocity.z = -2;
-            } else if (tilt > 10) {
-                this.velocity.z = 2;
-            } else {
-                this.velocity.z = 0;
-            }
+            const acceleration = event.accelerationIncludingGravity;
+            this.velocity.z = -(acceleration?.x || 0) / 2;
         });
+
+
+
+
 
 
         const collisionBox = new THREE.Box3().setFromObject(this.boatMesh);
@@ -208,6 +205,15 @@ export class Boat extends Entity {
         this.updateCollision();
         this.updateGravity();
         this.naturalCorrection();
+
+        this.updateCamera();
+    }
+
+    updateCamera() {
+        const camera = this.engine.getCamera();
+
+        // move the camera with the boat
+        camera.position.z = this.mesh.position.z;
     }
 
     /**
