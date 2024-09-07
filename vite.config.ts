@@ -5,5 +5,5 @@ export default defineConfig({
 
   ],
 
-  base: '/eweek-2024'
+  base: ''
 })

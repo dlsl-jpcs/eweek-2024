@@ -18,8 +18,7 @@ export async function preloadAssets() {
     const promises = [];
 
     for (const asset of PRELOAD_ASSETS) {
-        const path = "/eweek-2024/" + asset;
-        const promise = ASSET_LOADER.loadAsync(path).then((gltf) => {
+        const promise = ASSET_LOADER.loadAsync(asset).then((gltf) => {
             assets.set(asset, gltf);
         });
 
