@@ -107,7 +107,8 @@ export class Boat extends Entity {
 
     activePowerups: Powerup[] = [];
 
-
+    isFlying: boolean = false;
+    flyHeight: number = 0;
 
     scale: number = 1;
 
@@ -284,7 +285,8 @@ export class Boat extends Entity {
 
 
 
-    update(_deltaTime: number): void {
+    update(_deltaTime: number): void { 
+
         this.updateRotation();
         this.updateCollision();
         this.updateGravity(_deltaTime);
@@ -310,6 +312,10 @@ export class Boat extends Entity {
      * Update the rotation of the boat based on the markers
      */
     updateRotation() {
+
+        if (this.isFlying)
+            return;
+
         const boatFront = this.engine.findEntityByTag("boatFront") as BoatMarker;
         const boatBack = this.engine.findEntityByTag("boatBack") as BoatMarker;
 
@@ -395,7 +401,11 @@ export class Boat extends Entity {
     }
 
     updateGravity(deltaTime: number) {
-        this.velocity.y -= gravity;
+
+        if (!this.isFlying)
+        {
+            this.velocity.y -= gravity;
+        }
 
         // take into account the delta time
         this.mesh.position.add(this.velocity.clone().multiplyScalar(deltaTime));
@@ -420,8 +430,8 @@ export class Boat extends Entity {
         }
 
         const ray = new THREE.Raycaster(
-            this.mesh.position,
-            new THREE.Vector3(0, -1, 0),
+        this.mesh.position,
+        new THREE.Vector3(0, -1, 0),
         );
 
         const sea = this.engine.findEntityByTag("sea")!;

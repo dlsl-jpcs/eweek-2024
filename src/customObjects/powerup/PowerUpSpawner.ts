@@ -5,6 +5,7 @@ import { Speedup } from "./speedup";
 import * as THREE from "three";
 import { Jump } from "./jump";
 import { Ghost } from "./ghost";
+import { Jetpack } from "./jetpack";
 
 export class PowerUpSpawner extends Entity {
 
@@ -12,7 +13,8 @@ export class PowerUpSpawner extends Entity {
     powerups: Array<new (...args: any) => Powerup> = [
         Speedup,
         Jump,
-        Ghost
+        Ghost,
+        Jetpack
     ]
 
     timer: number = 3;
