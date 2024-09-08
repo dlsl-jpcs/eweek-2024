@@ -9,7 +9,7 @@ import { Powerup } from "./powerup/powerup";
 import { Ghost } from "./powerup/ghost";
 
 
-const gravity = 0.05;
+const gravity = 9.8;
 
 /**
  * The markers that indicate the front and back of the boat.
@@ -56,12 +56,12 @@ export class BoatMarker extends Entity {
             return;
         }
 
-        this.updateGravity(boat);
+        this.updateGravity(_deltaTime, boat);
     }
 
-    updateGravity(boat: Boat) {
+    updateGravity(delta: number, boat: Boat) {
         this.velocity.y -= gravity;
-        this.mesh.position.add(this.velocity);
+        this.mesh.position.add(this.velocity.clone().multiplyScalar(delta));
 
         if (this.mesh.position.y < 0) {
             this.mesh.position.y = 0;
@@ -155,9 +155,9 @@ export class Boat extends Entity {
 
             const key = event.key;
             if (key === "a") {
-                this.velocity.z = 2;
+                this.velocity.z = 150;
             } else if (key === "d") {
-                this.velocity.z = -2;
+                this.velocity.z = -150;
             }
         });
 
@@ -175,7 +175,7 @@ export class Boat extends Entity {
             }
 
             if (key === "y") {
-                this.velocity.y = 3;
+                this.velocity.y = 445;
             }
 
             if (key === "p") {
@@ -241,7 +241,7 @@ export class Boat extends Entity {
             return;
         }
 
-        this.velocity.y = 6;
+        this.velocity.y = 60;
     }
 
     setGhost(isGhost: boolean) {
@@ -287,7 +287,7 @@ export class Boat extends Entity {
     update(_deltaTime: number): void {
         this.updateRotation();
         this.updateCollision();
-        this.updateGravity();
+        this.updateGravity(_deltaTime);
         this.naturalCorrection();
 
         this.updateCamera();
@@ -394,9 +394,11 @@ export class Boat extends Entity {
         return null;
     }
 
-    updateGravity() {
+    updateGravity(deltaTime: number) {
         this.velocity.y -= gravity;
-        this.mesh.position.add(this.velocity);
+
+        // take into account the delta time
+        this.mesh.position.add(this.velocity.clone().multiplyScalar(deltaTime));
 
         const lowerBound = -380;
         const upperBound = 380;
