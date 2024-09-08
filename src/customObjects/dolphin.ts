@@ -1,6 +1,5 @@
 import { Entity } from "../engine/engine";
 import * as THREE from "three";
-import { DOLPHIN, getModel } from "../utils/resource";
 
 export default class Dolphin extends Entity {
     constructor() {
@@ -11,7 +10,7 @@ export default class Dolphin extends Entity {
 
     }
 
-    update(deltaTime: number): void {
+    update(_deltaTime: number): void {
 
     }
 }

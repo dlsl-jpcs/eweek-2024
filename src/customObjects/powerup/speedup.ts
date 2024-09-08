@@ -8,7 +8,6 @@ export class Speedup extends Powerup {
 
     gameLogic!: GameLogic;
 
-    private baseSpeed: number = 0;
 
     private fov: number = 50;
     private speed: number = 0;
@@ -65,7 +64,7 @@ export class Speedup extends Powerup {
             }
         } else {
             this.speed = Math.min(this.speed + 0.1, this.maxSpeed);
-            this.gameLogic.setSpeedModifier((current: number) => {
+            this.gameLogic.setSpeedModifier((_current: number) => {
                 return this.speed;
             });
 
@@ -78,7 +77,6 @@ export class Speedup extends Powerup {
     override onTrigger(): void {
         super.onTrigger();
 
-        this.baseSpeed = this.gameLogic.getSpeed();
     }
 
 

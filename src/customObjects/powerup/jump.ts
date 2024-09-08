@@ -1,4 +1,4 @@
-import { Box3, CircleGeometry, Mesh, MeshBasicMaterial, Object3D, SphereGeometry } from "three";
+import { Box3, Mesh, MeshBasicMaterial, Object3D, SphereGeometry } from "three";
 import { Powerup } from "./powerup";
 import { Boat } from "../boat";
 

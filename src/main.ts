@@ -8,7 +8,6 @@ import { GameLogic } from './component/gameLogic';
 import { MainMenu } from './component/mainMenu';
 
 import { preloadAssets, registerOnLoadCallback, registerOnProgressCallback } from './utils/resource';
-import Dolphin from './customObjects/dolphin';
 import { PowerUpSpawner } from './customObjects/powerup/PowerUpSpawner';
 
 

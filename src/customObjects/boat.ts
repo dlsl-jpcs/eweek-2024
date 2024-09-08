@@ -121,12 +121,11 @@ export class Boat extends Entity {
         boat.position.x = -10;
 
         // find children named "boat"
-        boat.traverse((child) => {
-            if (child.name === "FLAG") {
-                const mesh = child as THREE.Mesh;
-                const material = mesh.material as THREE.MeshStandardMaterial;
-            }
-        });
+        // boat.traverse((child) => {
+        //     if (child.name === "FLAG") {
+        //         const mesh = child as THREE.Mesh;
+        //     }
+        // });
 
         const scale = document.documentElement.clientWidth / 84;
         this.scale = Math.min(scale, 10);

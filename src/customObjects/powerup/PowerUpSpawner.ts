@@ -1,4 +1,3 @@
-import { pow } from "three/webgpu";
 import { Entity } from "../../engine/engine";
 import { Sea } from "../sea";
 import { Powerup } from "./powerup";
