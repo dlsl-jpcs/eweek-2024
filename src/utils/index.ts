@@ -71,6 +71,9 @@ export async function requestOrientationPermissions(): Promise<'granted' | 'deni
 
 
 export function isDebugModeOn(): boolean {
+  if (new URLSearchParams(window.location.search).get('debug') === 'true') {
+    return true;
+  }
   // check if is running locally
   return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 }
