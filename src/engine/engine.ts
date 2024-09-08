@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { Powerup } from '../customObjects/powerup/powerup';
 
 
 export abstract class Entity {
