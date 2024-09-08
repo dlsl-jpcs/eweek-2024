@@ -8,6 +8,11 @@ export abstract class Powerup extends Entity {
 
     renderObject: Object3D;
 
+    triggered: boolean = false;
+    timer: number = 0;
+
+
+
     constructor(tag: string) {
         super(tag);
 
@@ -30,16 +35,19 @@ export abstract class Powerup extends Entity {
         this.sea = this.findEntityByTag("sea") as Sea;
     }
 
+    public abstract getDuration(): number;
+
     public onTrigger(): void {
         this.object.remove(this.renderObject);
+
+        this.triggered = true;
     }
 
     override update(deltaTime: number): void {
         this.object.rotation.z -= this.sea.getSpeed() * deltaTime
 
 
-        if (this.object.rotation.z < -2.2) {
-
+        if (this.object.rotation.z < -2.2 && !this.triggered) {
             this.destroy();
         }
     }
@@ -47,6 +55,17 @@ export abstract class Powerup extends Entity {
     abstract getRenderObject(): Object3D;
 
     abstract getCollisionBox(): Box3;
+
+    /**
+     * Called when the user picks up the powerup but
+     * it already has the powerup
+     * 
+     * This is useful for powerups that have a duration
+     */
+    onReTrigger() {
+        this.timer -= this.getDuration();
+    }
+
 }
 
 function toRadians(angle: number) {

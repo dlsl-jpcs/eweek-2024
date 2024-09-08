@@ -271,7 +271,15 @@ export class GameLogic extends Entity {
         const powerups = this.engine.findEntitiesByType(Powerup);
         const powerupSpawner = this.engine.findEntityByTag("PowerUpSpawner")!;
         debugString += `Spawned Powerups: ${powerups.length}<br>`;
-        debugString += `Powerup Spawner Rotation Z: ${powerupSpawner.object.rotation.z}<br>`;
+
+        debugString += `<br>`;
+        debugString += `[Active Powerups] <br>`;
+        for (const powerup of this.player.activePowerups) {
+            debugString += `${powerup.constructor.name} <br>`;
+            debugString += `Duration: ${powerup.getDuration()} <br>`;
+            debugString += `Timer: ${powerup.timer} <br>`;
+        }
+
 
         this.mainMenu.updateDebugString(debugString);
     }

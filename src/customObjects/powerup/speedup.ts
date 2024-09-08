@@ -8,10 +8,14 @@ export class Speedup extends Powerup {
 
     gameLogic!: GameLogic;
 
+    private baseSpeed: number = 0;
+
+    private fov: number = 50;
+    private speed: number = 0;
+    private maxSpeed: number = 1;
+
     constructor() {
         super("Speedup");
-
-
     }
 
     getRenderObject(): THREE.Object3D {
@@ -21,9 +25,6 @@ export class Speedup extends Powerup {
         return new THREE.Mesh(geom, mat);
     }
 
-    override update(deltaTime: number): void {
-        super.update(deltaTime);
-    }
 
     override getCollisionBox(): THREE.Box3 {
         return new THREE.Box3().setFromObject(this.renderObject);
@@ -35,58 +36,54 @@ export class Speedup extends Powerup {
         this.gameLogic = this.findEntityByTag("GameLogic") as GameLogic;
     }
 
-    override onTrigger(): void {
-        super.onTrigger();
-        if (!this.gameLogic) {
+    public getDuration(): number {
+        return 3;
+    }
+
+    override update(deltaTime: number): void {
+        super.update(deltaTime);
+
+        if (!this.triggered) {
             return;
         }
-        const currentSpeed = this.gameLogic.getSpeed();
 
-        let speed = currentSpeed;
+        this.timer += deltaTime;
 
-        const speedModifier = (current: number) => {
-            return speed;
-        }
 
-        this.gameLogic.setSpeedModifier(speedModifier);
 
-        // gradually increase the speed in a span of 3 seconds
-        const interval = setInterval(() => {
-            speed += 0.3;
-            if (speed >= currentSpeed + 1 || this.isGameOver()) {
-                clearInterval(interval);
-            }
-        }, 100);
 
-        // increase fov
-        const fovInterval = setInterval(() => {
-            this.engine.getCamera().fov += 1;
+
+        if (this.timer >= this.getDuration()) {
+            this.gameLogic.removeSpeedModifier();
+
+            this.fov = Math.max(this.fov - 1, 50);
+            this.engine.getCamera().fov = this.fov;
             this.engine.getCamera().updateProjectionMatrix();
 
-            if (this.engine.getCamera().fov >= 90 || this.isGameOver()) {
-                clearInterval(fovInterval);
+            console.log(this.fov);
+
+            if (this.fov <= 50) {
+                this.destroy();
             }
-        }, 20);
+        } else {
+            this.speed = Math.min(this.speed + 0.1, this.maxSpeed);
+            this.gameLogic.setSpeedModifier((current: number) => {
+                return this.speed;
+            });
 
-        setTimeout(() => {
-            const interval = setInterval(() => {
-                speed -= 0.1;
-                if (speed <= currentSpeed || this.isGameOver()) {
-                    clearInterval(interval);
-                    this.gameLogic.removeSpeedModifier();
-                }
-            }, 100);
-
-            const fovInterval = setInterval(() => {
-                this.engine.getCamera().fov -= 1;
-                this.engine.getCamera().updateProjectionMatrix();
-
-                if (this.engine.getCamera().fov <= 50 || this.isGameOver()) {
-                    clearInterval(fovInterval);
-                }
-            }, 20);
-        }, 3000);
+            this.fov = Math.min(this.fov + 0.1, 90);
+            this.engine.getCamera().fov = this.fov;
+            this.engine.getCamera().updateProjectionMatrix();
+        }
     }
+
+    override onTrigger(): void {
+        super.onTrigger();
+
+        this.baseSpeed = this.gameLogic.getSpeed();
+    }
+
+
 
     public onDestroy(): void {
         super.onDestroy();

@@ -103,6 +103,8 @@ export class Boat extends Entity {
 
     mainMenu!: MainMenu;
 
+    activePowerups: Powerup[] = [];
+
 
 
     scale: number = 1;
@@ -256,6 +258,12 @@ export class Boat extends Entity {
         this.naturalCorrection();
 
         this.updateCamera();
+
+        for (const powerup of this.activePowerups) {
+            if (powerup.isDestroyed()) {
+                this.activePowerups.splice(this.activePowerups.indexOf(powerup), 1);
+            }
+        }
     }
 
     updateCamera() {
@@ -319,7 +327,17 @@ export class Boat extends Entity {
         for (const powerup of powerups) {
             const collision = this.checkCollision((powerup as Powerup).getCollisionBox());
             if (collision) {
-                (powerup as Powerup).onTrigger();
+                const collidedPowerup = powerup as Powerup;
+
+                // check if the powerup is already active
+                if (this.activePowerups.includes(collidedPowerup)) {
+                    // if it is, just call the onReTrigger method
+                    this.activePowerups[this.activePowerups.indexOf(collidedPowerup)].onReTrigger();
+                } else {
+                    // if it is not, call the onTrigger method
+                    collidedPowerup.onTrigger();
+                    this.activePowerups.push(collidedPowerup);
+                }
             }
         }
     }

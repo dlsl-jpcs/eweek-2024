@@ -9,6 +9,7 @@ export class Jump extends Powerup {
 
     private player!: Boat;
 
+
     constructor() {
         super("Jump");
     }
@@ -24,24 +25,31 @@ export class Jump extends Powerup {
         return new Box3().setFromObject(this.renderObject);
     }
 
+    public getDuration(): number {
+        return 5;
+    }
+
     public start(): void {
         super.start();
         this.player = this.findEntityByTag("player") as Boat
     }
 
-    override onTrigger(): void {
-        super.onTrigger();
+    update(deltaTime: number): void {
+        super.update(deltaTime);
 
-        if (!this.player) {
+        if (!this.triggered) {
             return;
         }
 
+        this.timer += deltaTime;
         this.player.setCanJump(true);
 
-        setTimeout(() => {
-            this.player.setCanJump(false);
-        }, 5000);
+        if (this.timer >= this.getDuration()) {
+            this.destroy();
+        }
     }
 
-
+    override onTrigger(): void {
+        super.onTrigger();
+    }
 }
