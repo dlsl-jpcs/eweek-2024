@@ -39,6 +39,9 @@ export class GameLogic extends Entity {
 
     private timer: number = 0;
 
+    private speedMultiplier: number = 1.0;
+    private speedAddedPerTenSeconds: number = 0.3;
+
     private obstacleTimer: number = 0;
     private obstacleSpawnRate: number = 2;
 
@@ -88,11 +91,14 @@ export class GameLogic extends Entity {
             // increment timer per second
             this.timer += deltaTime;
             // update the current score
-            this.currentScore = this.timer;
+            this.currentScore = this.timer / 5;
             // update the timer on the UI
-            this.mainMenu.updateScore(this.currentScore * 10);
+            this.mainMenu.updateScore(this.currentScore);
 
             this.sea.setSpeed(this.getSpeed());
+
+            this.speedMultiplier = (Math.round(this.timer / 10) + 1.0) * this.speedAddedPerTenSeconds; 
+            //this.timer > 10 ? (this.timer / 10) + 0.3 : 1.0;
 
             // decrease obstacle spawn rate but very slowly
             if (this.obstacleSpawnRate > 1.4) {
@@ -130,6 +136,10 @@ export class GameLogic extends Entity {
             const randomZ = Math.random() * (upperBound - lowerBound) + lowerBound;
             obstacle.mesh.position.z = randomZ;
         }
+    }
+
+    getSpeedMultiplier() {
+        return this.speedMultiplier;
     }
 
     async processAuth() {
@@ -239,7 +249,7 @@ export class GameLogic extends Entity {
             return this.speedModifier(this.timer);
         }
 
-        return .3 + this.timer * 0.001;
+        return .3 + (this.timer * 0.001) * this.getSpeedMultiplier();
     }
 
     setSpeedModifier(func: (speed: number) => number) {
@@ -255,6 +265,8 @@ export class GameLogic extends Entity {
             return;
 
         let debugString = `[Debug Logs]<br>`;
+        
+        debugString += `Speed Multiplier: ${this.speedMultiplier}<br>`;
         debugString += `Obstacles Spawned: ${this.obstacleSpawnedDebug}<br>`;
         debugString += `Obstacle Spawn Rate: ${this.obstacleSpawnRate}<br>`;
         debugString += `Obstacle Timer: ${this.obstacleTimer}<br>`;
@@ -290,7 +302,6 @@ export class GameLogic extends Entity {
             debugString += `Duration: ${powerup.getDuration()} <br>`;
             debugString += `Timer: ${powerup.timer} <br>`;
         }
-
 
         this.mainMenu.updateDebugString(debugString);
     }
