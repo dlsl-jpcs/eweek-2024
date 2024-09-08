@@ -8,6 +8,7 @@ export abstract class Entity {
     public tag: string;
 
     public isAlive: boolean = false;
+    protected isDestroyed: boolean = false;
 
     protected engine!: Engine;
 
@@ -60,7 +61,7 @@ export abstract class Entity {
      * Called when the entity is removed from the scene
      */
     public onDestroy() {
-
+        this.isDestroyed = true;
     }
 
     destroy() {

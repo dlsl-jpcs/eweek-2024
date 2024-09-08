@@ -71,7 +71,7 @@ export class Speedup extends Powerup {
         setTimeout(() => {
             const interval = setInterval(() => {
                 speed -= 0.1;
-                if (speed <= currentSpeed) {
+                if (speed <= currentSpeed || this.isDestroyed) {
                     clearInterval(interval);
                     this.gameLogic.removeSpeedModifier();
                 }
@@ -81,10 +81,16 @@ export class Speedup extends Powerup {
                 this.engine.getCamera().fov -= 1;
                 this.engine.getCamera().updateProjectionMatrix();
 
-                if (this.engine.getCamera().fov <= 50) {
+                if (this.engine.getCamera().fov <= 50 || this.isDestroyed) {
                     clearInterval(fovInterval);
                 }
             }, 20);
         }, 3000);
+    }
+
+    public onDestroy(): void {
+        super.onDestroy();
+        this.gameLogic.removeSpeedModifier();
+        this.engine.getCamera().fov = 50;
     }
 }
