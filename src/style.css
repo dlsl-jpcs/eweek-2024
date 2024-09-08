@@ -136,6 +136,7 @@ body {
 #scoreVal {
   opacity: 0;
   text-shadow: 0.2rem 0.2rem 0px #121212;
+  padding: 10px;
 }
 
 @keyframes blinker {
