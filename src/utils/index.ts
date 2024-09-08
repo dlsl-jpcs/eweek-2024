@@ -72,13 +72,11 @@ export async function requestOrientationPermissions(): Promise<'granted' | 'deni
 
 export function isDebugModeOn(): boolean {
   const debugSetting = new URLSearchParams(window.location.search).get('debug');
-  if (debugSetting)
-  {
+  if (debugSetting) {
     if (debugSetting === 'true') {
       return true;
     }
-    else 
-    {
+    else {
       return false;
     }
   }
