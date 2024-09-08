@@ -181,6 +181,8 @@ export class GameLogic extends Entity {
             this.playerData = result;
             return true;
         }
+
+        return false;
     }
 
     // check this for potential bugs @tyron

@@ -99,7 +99,9 @@ export async function tokenCheck(): Promise<PlayerData> {
         .then((response) => {
 
             const data = response.data as Response;
+            console.log(data);
             if (data.status === "invalid") {
+                console.log(data.status);
                 throw new Error("Invalid Token");
             }
 
