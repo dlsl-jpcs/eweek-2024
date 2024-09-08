@@ -86,5 +86,5 @@ export function isDebugModeOn(): boolean {
 }
 
 export function getServerURL() {
-  return isDebugModeOn() ? 'http://localhost:3000' : 'https://eweek-2024-server.onrender.com';
+  return isDebugModeOn() ? 'http://localhost:3000' : 'https://eweek-api.tyronscott.me';
 }
