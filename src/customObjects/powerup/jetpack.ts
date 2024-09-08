@@ -9,13 +9,13 @@ export class Jetpack extends Powerup {
 
     gameLogic!: GameLogic;
 
-    private flyHeight: number = 1;
+    // private flyHeight: number = 1;
     private fov: number = 50;
     private speed: number = 0;
     private maxSpeed: number = 1;
 
     private player!: Boat;
-   
+
     constructor() {
         super("Jetpack");
     }
@@ -34,7 +34,7 @@ export class Jetpack extends Powerup {
 
     public start(): void {
         super.start();
-          this.player = this.findEntityByTag("player") as Boat
+        this.player = this.findEntityByTag("player") as Boat
         this.gameLogic = this.findEntityByTag("GameLogic") as GameLogic;
     }
 
@@ -61,9 +61,9 @@ export class Jetpack extends Powerup {
             if (this.fov <= 50) {
                 this.destroy();
             }
-            
+
             this.player.isFlying = false;
-            
+
         } else {
             this.speed = Math.min(this.speed + 0.1, this.maxSpeed);
             this.gameLogic.setSpeedModifier((_current: number) => {
@@ -77,8 +77,7 @@ export class Jetpack extends Powerup {
 
             this.player.velocity.y = 60;
 
-            if (this.player.mesh.position.y >= 300)
-            {
+            if (this.player.mesh.position.y >= 300) {
                 this.player.velocity.y = 0;
             }
         }
