@@ -6,6 +6,7 @@ import { GameLogic, GameState } from "../component/gameLogic";
 import { MainMenu } from "../component/mainMenu";
 import { Speedup } from "./powerup/speedup";
 import { Powerup } from "./powerup/powerup";
+import { Ghost } from "./powerup/ghost";
 
 
 const gravity = 0.05;
@@ -100,6 +101,7 @@ export class Boat extends Entity {
     controlsEnabled: boolean = false;
     onGround: boolean = false;
     canJump: boolean = false;
+    isGhost: boolean = false;
 
     mainMenu!: MainMenu;
 
@@ -177,7 +179,7 @@ export class Boat extends Entity {
             }
 
             if (key === "p") {
-                const powerup = this.engine.instantiate(Speedup);
+                const powerup = this.engine.instantiate(Ghost);
                 setTimeout(() => {
                     this.collideWithPowerup(powerup);
                 }, 10);
@@ -240,6 +242,30 @@ export class Boat extends Entity {
         }
 
         this.velocity.y = 6;
+    }
+
+    setGhost(isGhost: boolean) {
+        if (isGhost) {
+            this.isGhost = true;
+
+            // make boat transparent
+            this.boatMesh.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    (child.material as THREE.MeshBasicMaterial).transparent = true;
+                    (child.material as THREE.MeshBasicMaterial).opacity = 0.5;
+                }
+            });
+        } else {
+            this.isGhost = false
+
+            // make boat opaque
+            this.boatMesh.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    (child.material as THREE.MeshBasicMaterial).transparent = true;
+                    (child.material as THREE.MeshBasicMaterial).opacity = 1;
+                }
+            });
+        }
     }
 
     override start(): void {
@@ -323,10 +349,12 @@ export class Boat extends Entity {
     updateCollision() {
         const obstacles = this.engine.findEntitiesByType(Obstacle);
 
-        for (const obstacle of obstacles) {
-            const collision = this.checkCollision((obstacle as Obstacle).getCollisionBox());
-            if (collision) {
-                this.gameLogic.setGameState(GameState.OVER);
+        if (!this.isGhost) {
+            for (const obstacle of obstacles) {
+                const collision = this.checkCollision((obstacle as Obstacle).getCollisionBox());
+                if (collision) {
+                    this.gameLogic.setGameState(GameState.OVER);
+                }
             }
         }
 
