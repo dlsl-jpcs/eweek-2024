@@ -39,9 +39,6 @@ export class GameLogic extends Entity {
 
     private timer: number = 0;
 
-    private speedMultiplier: number = 1.0;
-    private speedAddedPerTenSeconds: number = 0.3;
-
     private obstacleTimer: number = 0;
     private obstacleSpawnRate: number = 2;
 
@@ -97,9 +94,6 @@ export class GameLogic extends Entity {
 
             this.sea.setSpeed(this.getSpeed());
 
-            this.speedMultiplier = (Math.round(this.timer / 10) + 1.0) * this.speedAddedPerTenSeconds; 
-            //this.timer > 10 ? (this.timer / 10) + 0.3 : 1.0;
-
             // decrease obstacle spawn rate but very slowly
             if (this.obstacleSpawnRate > 1.4) {
                 this.obstacleSpawnRate -= 0.000001;
@@ -136,10 +130,6 @@ export class GameLogic extends Entity {
             const randomZ = Math.random() * (upperBound - lowerBound) + lowerBound;
             obstacle.mesh.position.z = randomZ;
         }
-    }
-
-    getSpeedMultiplier() {
-        return this.speedMultiplier;
     }
 
     async processAuth() {
@@ -238,9 +228,17 @@ export class GameLogic extends Entity {
 
             this.sea.setSpeed(this.getSpeed());
         } else if (state === GameState.OVER) {
+            
+            // call this before anything else
+            this.mainMenu.showGameOver();
+
             this.sea.setSpeed(0);
             this.player.disableControls();
-            this.mainMenu.showGameOver();
+            
+            if (this.currentScore > this.getPlayerData().top_score) 
+            {
+                this.getPlayerData().top_score = this.currentScore;
+            }
         }
     }
 
@@ -249,7 +247,7 @@ export class GameLogic extends Entity {
             return this.speedModifier(this.timer);
         }
 
-        return .3 + (this.timer * 0.001) * this.getSpeedMultiplier();
+        return .3 + this.timer * 0.005;
     }
 
     setSpeedModifier(func: (speed: number) => number) {
@@ -266,7 +264,6 @@ export class GameLogic extends Entity {
 
         let debugString = `[Debug Logs]<br>`;
         
-        debugString += `Speed Multiplier: ${this.speedMultiplier}<br>`;
         debugString += `Obstacles Spawned: ${this.obstacleSpawnedDebug}<br>`;
         debugString += `Obstacle Spawn Rate: ${this.obstacleSpawnRate}<br>`;
         debugString += `Obstacle Timer: ${this.obstacleTimer}<br>`;
