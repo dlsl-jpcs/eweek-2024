@@ -176,6 +176,13 @@ export class Boat extends Entity {
             if (key === "y") {
                 this.velocity.y = 3;
             }
+
+            if (key === "p") {
+                const powerup = this.engine.instantiate(Speedup);
+                setTimeout(() => {
+                    this.collideWithPowerup(powerup);
+                }, 10);
+            }
         });
 
 
@@ -330,17 +337,34 @@ export class Boat extends Entity {
             if (collision) {
                 const collidedPowerup = powerup as Powerup;
 
-                // check if the powerup is already active
-                if (this.activePowerups.includes(collidedPowerup)) {
-                    // if it is, just call the onReTrigger method
-                    this.activePowerups[this.activePowerups.indexOf(collidedPowerup)].onReTrigger();
-                } else {
-                    // if it is not, call the onTrigger method
-                    collidedPowerup.onTrigger();
-                    this.activePowerups.push(collidedPowerup);
-                }
+                this.collideWithPowerup(collidedPowerup);
             }
         }
+    }
+
+    collideWithPowerup(powerup: Powerup) {
+        const activePowerup = this.getActivePowerup(powerup);
+
+        // check if the powerup is already active
+        if (activePowerup !== null) {
+            // if it is, just call the onReTrigger method
+            activePowerup.onReTrigger();
+            powerup.destroy();
+        } else {
+            // if it is not, call the onTrigger method
+            powerup.onTrigger();
+            this.activePowerups.push(powerup);
+        }
+    }
+
+    getActivePowerup(powerup: Powerup) {
+        for (const activePowerup of this.activePowerups) {
+            if (activePowerup.tag === powerup.tag) {
+                return activePowerup;
+            }
+        }
+
+        return null;
     }
 
     updateGravity() {

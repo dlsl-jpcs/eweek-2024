@@ -63,7 +63,7 @@ export abstract class Powerup extends Entity {
      * This is useful for powerups that have a duration
      */
     onReTrigger() {
-        this.timer -= this.getDuration();
+        this.timer = 0;
     }
 
 }
