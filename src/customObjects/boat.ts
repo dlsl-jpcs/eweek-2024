@@ -156,9 +156,9 @@ export class Boat extends Entity {
 
             const key = event.key;
             if (key === "a") {
-                this.velocity.z = 150;
+                this.velocity.z = 250;
             } else if (key === "d") {
-                this.velocity.z = -150;
+                this.velocity.z = -250;
             }
         });
 
