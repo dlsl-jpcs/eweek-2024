@@ -159,8 +159,6 @@ export async function codeCheck(code: string): Promise<boolean> {
         });
 }
 
-
-// TODO: Upload the signature to the server
 export async function submitSignature(signatureBase64: string) {
 
     interface Response {
@@ -186,6 +184,42 @@ export async function submitSignature(signatureBase64: string) {
     console.log('Submitting Signature in Base64 Format: ' + signatureBase64);
 
     return axios.post(SERVER_URL + "/api/v1/player/submitSignature", request, config)
+        .then((response) => {
+            const data = response.data as Response;
+            console.log(data);
+            return data.status === "verified";
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        });
+}
+
+export async function updateTopScore(newScore: number) {
+
+    interface Response {
+        status: string,
+        message: string
+    }
+
+    interface Request {
+        score: number
+    }
+
+    const request: Request = {
+        score: Math.round(newScore)
+    }
+
+    const config: AxiosRequestConfig = {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        withCredentials: true
+    }
+
+    console.log('Submitting New Top Score: ' + newScore);
+
+    return axios.post(SERVER_URL + "/api/v1/player/updateTopScore", request, config)
         .then((response) => {
             const data = response.data as Response;
             console.log(data);

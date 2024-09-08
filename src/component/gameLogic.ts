@@ -2,7 +2,7 @@ import { Entity } from "../engine/engine";
 import { MainMenu } from "./mainMenu";
 import { Sea } from "../customObjects/sea";
 import { Obstacle } from "../customObjects/obstacle";
-import { codeCheck, signatureCheck, submitSignature, tokenCheck, PlayerData } from "../auth";
+import { codeCheck, signatureCheck, submitSignature, tokenCheck, PlayerData, updateTopScore } from "../auth";
 import { Boat } from "../customObjects/boat";
 import { getOrientationPermissionState, isDebugModeOn } from "../utils";
 import { Powerup } from "../customObjects/powerup/powerup";
@@ -142,6 +142,7 @@ export class GameLogic extends Entity {
                 this.mainMenu.hideSigModal();
                 console.log("Player has signed");
                 this.mainMenu.authDone();
+                this.mainMenu.registerGameStartClickListener();
             } else {
                 console.log("Player has not signed");
                 this.mainMenu.showSigModal();
@@ -238,6 +239,7 @@ export class GameLogic extends Entity {
             if (this.currentScore > this.getPlayerData().top_score) 
             {
                 this.getPlayerData().top_score = this.currentScore;
+                updateTopScore(this.currentScore);
             }
         }
     }

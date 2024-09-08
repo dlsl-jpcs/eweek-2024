@@ -71,13 +71,24 @@ export async function requestOrientationPermissions(): Promise<'granted' | 'deni
 
 
 export function isDebugModeOn(): boolean {
-  if (new URLSearchParams(window.location.search).get('debug') === 'true') {
-    return true;
+  const debugSetting = new URLSearchParams(window.location.search).get('debug');
+  if (debugSetting)
+  {
+    if (debugSetting === 'true') {
+      return true;
+    }
+    else 
+    {
+      return false;
+    }
   }
+
   // check if is running locally
   return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 }
 
 export function getServerURL() {
+  return 'http://localhost:3000';
+
   return isDebugModeOn() ? 'http://localhost:3000' : 'https://eweek-2024-server.onrender.com';
 }
