@@ -133,8 +133,6 @@ export class MainMenu extends Entity {
         // wait so clicking menu won't start game once auth done
         setTimeout(() => {
             document.addEventListener("click", () => {
-                console.log(this.gameLogic.getGameState());
-
                 let boat = this.engine.findEntityByTag("player")! as Boat;
                 if (boat) {
                     boat.enableControls();

@@ -114,8 +114,6 @@ export default class Engine {
         entity.onDestroy();
         this.scene.remove(entity.object);
         this.entities = this.entities.filter(e => e !== entity);
-
-        console.log("Entity removed", entity.tag);
     }
 
 

@@ -125,7 +125,6 @@ export class GameLogic extends Entity {
             const upperBound = width;
 
             const randomZ = Math.random() * (upperBound - lowerBound) + lowerBound;
-            console.log(randomZ);
             obstacle.mesh.position.z = randomZ;
         }
     }

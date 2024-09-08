@@ -1,5 +1,5 @@
 import { SphereGeometry } from "three";
-import { GameLogic } from "../../component/gameLogic";
+import { GameLogic, GameState } from "../../component/gameLogic";
 import { Powerup } from "./powerup";
 
 import * as THREE from "three";
@@ -53,7 +53,7 @@ export class Speedup extends Powerup {
         // gradually increase the speed in a span of 3 seconds
         const interval = setInterval(() => {
             speed += 0.3;
-            if (speed >= currentSpeed + 1) {
+            if (speed >= currentSpeed + 1 || this.isGameOver()) {
                 clearInterval(interval);
             }
         }, 100);
@@ -63,7 +63,7 @@ export class Speedup extends Powerup {
             this.engine.getCamera().fov += 1;
             this.engine.getCamera().updateProjectionMatrix();
 
-            if (this.engine.getCamera().fov >= 90) {
+            if (this.engine.getCamera().fov >= 90 || this.isGameOver()) {
                 clearInterval(fovInterval);
             }
         }, 20);
@@ -71,7 +71,7 @@ export class Speedup extends Powerup {
         setTimeout(() => {
             const interval = setInterval(() => {
                 speed -= 0.1;
-                if (speed <= currentSpeed || this.isDestroyed) {
+                if (speed <= currentSpeed || this.isGameOver()) {
                     clearInterval(interval);
                     this.gameLogic.removeSpeedModifier();
                 }
@@ -81,7 +81,7 @@ export class Speedup extends Powerup {
                 this.engine.getCamera().fov -= 1;
                 this.engine.getCamera().updateProjectionMatrix();
 
-                if (this.engine.getCamera().fov <= 50 || this.isDestroyed) {
+                if (this.engine.getCamera().fov <= 50 || this.isGameOver()) {
                     clearInterval(fovInterval);
                 }
             }, 20);
@@ -90,7 +90,9 @@ export class Speedup extends Powerup {
 
     public onDestroy(): void {
         super.onDestroy();
-        this.gameLogic.removeSpeedModifier();
-        this.engine.getCamera().fov = 50;
+    }
+
+    isGameOver() {
+        return this.gameLogic.getGameState() === GameState.OVER;
     }
 }

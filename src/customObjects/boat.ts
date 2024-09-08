@@ -214,6 +214,11 @@ export class Boat extends Entity {
     public reset() {
         this.mesh.position.set(-100, 100, 0);
         this.velocity = new THREE.Vector3(0, 0, 0);
+
+        this.engine.getCamera().fov = 50;
+        this.engine.getCamera().updateProjectionMatrix();
+
+        this.gameLogic.removeSpeedModifier();
     }
 
 
@@ -324,7 +329,6 @@ export class Boat extends Entity {
 
         if (this.mesh.position.z > upperBound) {
             this.mesh.position.z = upperBound;
-            console.log("upper bound");
             this.velocity.z = 0;
         }
 
