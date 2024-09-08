@@ -68,3 +68,9 @@ export async function requestOrientationPermissions(): Promise<'granted' | 'deni
 
   return response;
 }
+
+
+export function isDebugModeOn(): boolean {
+  // check if is running locally
+  return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+}

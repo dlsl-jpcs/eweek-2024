@@ -1,10 +1,11 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { isDebugModeOn } from "../utils";
 
 export const SERVER_URL = "http://localhost:3000";
 
 // Set to true to enable debug mode
 // This will ignore the signature check and token check
-const DEBUG = true;
+const DEBUG = isDebugModeOn();
 
 export interface PlayerData {
     id: number;

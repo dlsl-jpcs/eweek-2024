@@ -46,7 +46,7 @@ export class Obstacle extends Entity {
         collisionBox.min.z += 50;
         collisionBox.max.z -= 50;
         const box = new THREE.Box3Helper(collisionBox, 0xfffe6262);
-        // box.visible = false;
+        box.visible = false;
         this.obstacleMesh = box;
 
         this.mesh.add(box);

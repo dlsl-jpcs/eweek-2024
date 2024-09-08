@@ -4,7 +4,7 @@ import { Sea } from "../customObjects/sea";
 import { Obstacle } from "../customObjects/obstacle";
 import { codeCheck, signatureCheck, submitSignature, tokenCheck, PlayerData } from "../auth";
 import { Boat } from "../customObjects/boat";
-import { getOrientationPermissionState } from "../utils";
+import { getOrientationPermissionState, isDebugModeOn } from "../utils";
 import { Powerup } from "../customObjects/powerup/powerup";
 
 export enum GameState {
@@ -46,8 +46,6 @@ export class GameLogic extends Entity {
     private sea!: Sea;
     private player!: Boat;
 
-    /**       debugging stuff       */
-    private debugModeOn: boolean = true;
     private obstacleSpawnedDebug: number = 0;
     private speedModifier!: ((speed: number) => number) | undefined;
     /** --------------------------- */
@@ -118,7 +116,7 @@ export class GameLogic extends Entity {
         if (this.obstacleTimer > this.obstacleSpawnRate) {
             this.obstacleTimer = 0;
 
-            if (this.isDebugModeOn()) {
+            if (isDebugModeOn()) {
                 this.obstacleSpawnedDebug++;
             }
 
@@ -244,7 +242,7 @@ export class GameLogic extends Entity {
     }
 
     updateDebugLogs() {
-        if (!this.isDebugModeOn())
+        if (!isDebugModeOn())
             return;
 
         let debugString = `[Debug Logs]<br>`;
@@ -286,10 +284,6 @@ export class GameLogic extends Entity {
 
 
         this.mainMenu.updateDebugString(debugString);
-    }
-
-    isDebugModeOn() {
-        return this.debugModeOn;
     }
 
     getCurrentScore() {
