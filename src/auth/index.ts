@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { isDebugModeOn } from "../utils";
+import { getServerURL, isDebugModeOn } from "../utils";
 
-export const SERVER_URL = "http://localhost:3000";
+export const SERVER_URL = getServerURL();
 
 // Set to true to enable debug mode
 // This will ignore the signature check and token check
