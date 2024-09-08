@@ -4,7 +4,6 @@ import { getModel, SAILBOAT } from "../utils/resource";
 import { Obstacle as Obstacle } from "./obstacle";
 import { GameLogic, GameState } from "../component/gameLogic";
 import { MainMenu } from "../component/mainMenu";
-import { Speedup } from "./powerup/speedup";
 import { Powerup } from "./powerup/powerup";
 import { Ghost } from "./powerup/ghost";
 
