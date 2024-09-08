@@ -219,6 +219,7 @@ export class Boat extends Entity {
 
         this.engine.getCamera().fov = 50;
         this.engine.getCamera().updateProjectionMatrix();
+        this.canJump = false;
 
         this.gameLogic.removeSpeedModifier();
     }
@@ -232,7 +233,7 @@ export class Boat extends Entity {
             return;
         }
 
-        this.velocity.y = 3;
+        this.velocity.y = 6;
     }
 
     override start(): void {
