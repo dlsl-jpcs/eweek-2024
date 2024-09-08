@@ -5,6 +5,7 @@ import { Obstacle } from "../customObjects/obstacle";
 import { codeCheck, signatureCheck, submitSignature, tokenCheck, PlayerData } from "../auth";
 import { Boat } from "../customObjects/boat";
 import { getOrientationPermissionState } from "../utils";
+import { Powerup } from "../customObjects/powerup/powerup";
 
 export enum GameState {
     IDLE,
@@ -48,6 +49,7 @@ export class GameLogic extends Entity {
     /**       debugging stuff       */
     private debugModeOn: boolean = true;
     private obstacleSpawnedDebug: number = 0;
+    private speedModifier!: ((speed: number) => number) | undefined;
     /** --------------------------- */
 
     constructor() {
@@ -92,12 +94,14 @@ export class GameLogic extends Entity {
             // update the timer on the UI
             this.mainMenu.updateScore(this.currentScore * 10);
 
+            this.sea.setSpeed(this.getSpeed());
+
             // spawn obstacles
             this.spawnObstacle(deltaTime);
         }
 
         // update debug logs
-        // this.updateDebugLogs();
+        this.updateDebugLogs();
     }
 
     /**
@@ -204,12 +208,30 @@ export class GameLogic extends Entity {
             this.timer = 0;
 
             this.currentScore = 0;
-            this.sea.setSpeed(0.3);
+
+
+            this.sea.setSpeed(this.getSpeed());
         } else if (state === GameState.OVER) {
             this.sea.setSpeed(0);
             this.player.disableControls();
             this.mainMenu.showGameOver();
         }
+    }
+
+    getSpeed() {
+        if (this.speedModifier !== undefined) {
+            return this.speedModifier(this.timer);
+        }
+
+        return .3 + this.timer * 0.001;
+    }
+
+    setSpeedModifier(func: (speed: number) => number) {
+        this.speedModifier = func;
+    }
+
+    removeSpeedModifier() {
+        this.speedModifier = undefined;
     }
 
     updateDebugLogs() {
@@ -222,8 +244,10 @@ export class GameLogic extends Entity {
         debugString += `Obstacle Timer: ${this.obstacleTimer}<br>`;
         debugString += `Game State: ${GameState[this.gameState]}<br>`;
         debugString += `Timer: ${this.timer}<br>`;
+        debugString += `Speed: ${this.getSpeed()}<br>`;
         debugString += `Current Score: ${this.currentScore}<br>`;
-        debugString += `High Score: ${this.getPlayerData().top_score}<br>`;
+        debugString += `High Score: ${this.getPlayerData().top_score}<br><br>`;
+
         debugString += `Player First Name: ${this.getPlayerData().username}<br>`;
         debugString += `Player Name: ${this.getPlayerData().name}<br>`;
         debugString += `Player ID: ${this.getPlayerData().id}<br>`;
@@ -231,7 +255,13 @@ export class GameLogic extends Entity {
         debugString += `Player Student ID: ${this.getPlayerData().student_id}<br>`;
         debugString += `Player Course: ${this.getPlayerData().course}<br>`;
         debugString += `Player Section: ${this.getPlayerData().section}<br>`;
-        debugString += `Player Code: ${this.getPlayerData().code}<br>`;
+        debugString += `Player Code: ${this.getPlayerData().code}<br><br>`;
+
+        debugString += `[Power Ups] <br>`
+        const powerups = this.engine.findEntitiesByType(Powerup);
+        const powerupSpawner = this.engine.findEntityByTag("PowerUpSpawner")!;
+        debugString += `Spawned Powerups: ${powerups.length}<br>`;
+        debugString += `Powerup Spawner Rotation Z: ${powerupSpawner.object.rotation.z}<br>`;
 
         this.mainMenu.updateDebugString(debugString);
     }

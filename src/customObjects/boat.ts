@@ -4,6 +4,8 @@ import { getModel, SAILBOAT } from "../utils/resource";
 import { Obstacle as Obstacle } from "./obstacle";
 import { GameLogic, GameState } from "../component/gameLogic";
 import { MainMenu } from "../component/mainMenu";
+import { Speedup } from "./powerup/speedup";
+import { Powerup } from "./powerup/powerup";
 
 
 const gravity = 0.05;
@@ -162,6 +164,13 @@ export class Boat extends Entity {
             if (key === "y") {
                 this.velocity.y = 3;
             }
+
+            if (key === "h") {
+                const speedup = this.engine.instantiate(Speedup);
+                setTimeout(() => {
+                    speedup.onTrigger();
+                }, 20);
+            }
         });
 
 
@@ -273,9 +282,17 @@ export class Boat extends Entity {
         const obstacles = this.engine.findEntitiesByType(Obstacle);
 
         for (const obstacle of obstacles) {
-            const collision = this.checkCollision(obstacle as Obstacle);
+            const collision = this.checkCollision((obstacle as Obstacle).getCollisionBox());
             if (collision) {
                 this.gameLogic.setGameState(GameState.OVER);
+            }
+        }
+
+        const powerups = this.engine.findEntitiesByType(Powerup);
+        for (const powerup of powerups) {
+            const collision = this.checkCollision((powerup as Powerup).getCollisionBox());
+            if (collision) {
+                (powerup as Powerup).onTrigger();
             }
         }
     }
@@ -299,8 +316,6 @@ export class Boat extends Entity {
         if (intersectObjects.length > 0) {
             const intersect = intersectObjects[0];
 
-            this.mainMenu.updateDebugString("intersect" + intersect.distance);
-
             if (intersect.distance < 120) {
                 this.mesh.position.y = intersect.point.y + 120;
                 this.velocity.y = 0;
@@ -308,13 +323,12 @@ export class Boat extends Entity {
         }
     }
 
-    checkCollision(obstacle: Obstacle): boolean {
+    checkCollision(other: THREE.Box3): boolean {
         // mesh collision
         const thisMesh = this.collisionBox;
-        const otherMesh = obstacle.getCollisionBox();
 
         const thisBox = new THREE.Box3().setFromObject(thisMesh);
-        const otherBox = otherMesh;
+        const otherBox = other;
 
         return thisBox.intersectsBox(otherBox);
     }

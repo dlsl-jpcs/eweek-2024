@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Powerup } from '../customObjects/powerup/powerup';
 
 
 export abstract class Entity {
@@ -102,6 +103,10 @@ export default class Engine {
     addEntity(entity: Entity) {
         this.entities.push(entity);
         this.scene.add(entity.object);
+    }
+
+    getEntities() {
+        return this.entities;
     }
 
     removeEntity(entity: Entity) {
@@ -224,7 +229,9 @@ export default class Engine {
                 entity.isAlive = true;
             }
         });
-        this.entities.forEach(entity => entity.update(deltaTime));
+        this.entities.forEach(entity => {
+            entity.update(deltaTime);
+        });
     }
 
     render() {

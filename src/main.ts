@@ -9,6 +9,7 @@ import { MainMenu } from './component/mainMenu';
 
 import { preloadAssets, registerOnLoadCallback, registerOnProgressCallback } from './utils/resource';
 import Dolphin from './customObjects/dolphin';
+import { PowerUpSpawner } from './customObjects/powerup/PowerUpSpawner';
 
 
 async function main() {
@@ -52,6 +53,9 @@ function initEngine() {
 
   engine.instantiate(BoatMarker);
   engine.instantiate(BoatMarker, true);
+
+
+  engine.instantiate(PowerUpSpawner);
 
 
   engine.init();
