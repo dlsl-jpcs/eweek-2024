@@ -7,41 +7,57 @@ import { setupLighting } from './customObjects/lights';
 import { GameLogic } from './component/gameLogic';
 import { MainMenu } from './component/mainMenu';
 
-import { preloadAssets } from './utils/resource';
+import { preloadAssets, registerOnLoadCallback, registerOnProgressCallback } from './utils/resource';
+import Dolphin from './customObjects/dolphin';
 
 
 async function main() {
-  // ASSET PRELOAD
-  // TODO: Loading screen ?
-  await preloadAssets();
+  const loadingScreen = document.getElementById("loading_screen");
+
+  registerOnLoadCallback(() => {
+    initEngine();
 
 
+    if (loadingScreen) {
+      loadingScreen.classList.add("hidden");
+    }
+  });
+
+  registerOnProgressCallback((url, loaded, total) => {
+    if (loadingScreen) {
+      const progress = (loaded / total) * 100;
+      loadingScreen.style.width = `${progress}%`;
+    }
+
+    const loadingText = document.getElementById("loading-text");
+    if (loadingText) {
+      loadingText.innerText = `Loading ${url}`;
+    }
+
+
+  });
+
+
+  preloadAssets();
+}
+
+function initEngine() {
   const engine = new Engine();
 
   engine.instantiate(MainMenu);
-
   engine.instantiate(GameLogic);
 
-
-
   engine.instantiate(Sea);
-
   engine.instantiate(Boat);
-
 
   engine.instantiate(BoatMarker);
   engine.instantiate(BoatMarker, true);
 
 
   engine.init();
-
-
-  /// ------ END OF COFFEE'S DIRTY ASS SPAGHETTI CODE ------
-
   setupLighting(engine);
 
   engine.start();
-
 
 }
 

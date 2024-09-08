@@ -1,20 +1,46 @@
+import { LoadingManager } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
+
 
 export const SAILBOAT = "sailboat.glb";
 export const ICEBERG = "iceberg.glb";
 export const ISLAND = "island.glb";
+export const DOLPHIN = "dolphin.glb";
 
-const ASSET_LOADER = new GLTFLoader();
+const MANAGER = new LoadingManager();
+const ASSET_LOADER = new GLTFLoader(MANAGER);
 
 const PRELOAD_ASSETS = [
     SAILBOAT,
     ICEBERG,
-    ISLAND
+    ISLAND,
+    DOLPHIN
 ];
 
 const assets = new Map<string, GLTF>();
+const onLoadCallbacks: (() => void)[] = [];
+
+
+
+MANAGER.onStart = (url, loaded, total) => {
+    console.log("STARTED: " + url + " " + loaded + " " + total);
+}
+
+MANAGER.onProgress = (url, loaded, total) => {
+    console.log("PROGRESS: " + url + " " + loaded + " " + total)
+}
+
+MANAGER.onLoad = () => {
+    onLoadCallbacks.forEach((callback) => callback());
+}
+
+MANAGER.onError = (url) => {
+    console.error("ERROR: " + url);
+}
+
 
 export async function preloadAssets() {
+    console.log("PRELOAD")
     const promises = [];
 
     for (const asset of PRELOAD_ASSETS) {
@@ -24,8 +50,6 @@ export async function preloadAssets() {
 
         promises.push(promise);
     }
-
-    await Promise.all(promises);
 }
 
 
@@ -36,4 +60,12 @@ export function getModel(name: string) {
     }
 
     return asset;
+}
+
+export function registerOnLoadCallback(callback: (() => void)) {
+    onLoadCallbacks.push(callback);
+}
+
+export function registerOnProgressCallback(callback: ((url: string, loaded: number, total: number) => void)) {
+    MANAGER.onProgress = callback;
 }
