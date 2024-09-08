@@ -2,7 +2,7 @@ import { Entity } from "../engine/engine";
 import { MainMenu } from "./mainMenu";
 import { Sea } from "../customObjects/sea";
 import { Obstacle } from "../customObjects/obstacle";
-import { codeCheck, signatureCheck, submitSignature, tokenCheck, PlayerData } from "../auth";
+import { codeCheck, signatureCheck, submitSignature, tokenCheck, PlayerData, updateTopScore } from "../auth";
 import { Boat } from "../customObjects/boat";
 import { getOrientationPermissionState, isDebugModeOn } from "../utils";
 import { Powerup } from "../customObjects/powerup/powerup";
@@ -88,9 +88,9 @@ export class GameLogic extends Entity {
             // increment timer per second
             this.timer += deltaTime;
             // update the current score
-            this.currentScore = this.timer;
+            this.currentScore = this.timer / 5;
             // update the timer on the UI
-            this.mainMenu.updateScore(this.currentScore * 10);
+            this.mainMenu.updateScore(this.currentScore);
 
             this.sea.setSpeed(this.getSpeed());
 
@@ -142,6 +142,7 @@ export class GameLogic extends Entity {
                 this.mainMenu.hideSigModal();
                 console.log("Player has signed");
                 this.mainMenu.authDone();
+                this.mainMenu.registerGameStartClickListener();
             } else {
                 console.log("Player has not signed");
                 this.mainMenu.showSigModal();
@@ -228,9 +229,18 @@ export class GameLogic extends Entity {
 
             this.sea.setSpeed(this.getSpeed());
         } else if (state === GameState.OVER) {
+            
+            // call this before anything else
+            this.mainMenu.showGameOver();
+
             this.sea.setSpeed(0);
             this.player.disableControls();
-            this.mainMenu.showGameOver();
+            
+            if (this.currentScore > this.getPlayerData().top_score) 
+            {
+                this.getPlayerData().top_score = this.currentScore;
+                updateTopScore(this.currentScore);
+            }
         }
     }
 
@@ -239,7 +249,7 @@ export class GameLogic extends Entity {
             return this.speedModifier(this.timer);
         }
 
-        return .3 + this.timer * 0.001;
+        return .3 + this.timer * 0.005;
     }
 
     setSpeedModifier(func: (speed: number) => number) {
@@ -255,6 +265,7 @@ export class GameLogic extends Entity {
             return;
 
         let debugString = `[Debug Logs]<br>`;
+        
         debugString += `Obstacles Spawned: ${this.obstacleSpawnedDebug}<br>`;
         debugString += `Obstacle Spawn Rate: ${this.obstacleSpawnRate}<br>`;
         debugString += `Obstacle Timer: ${this.obstacleTimer}<br>`;
@@ -290,7 +301,6 @@ export class GameLogic extends Entity {
             debugString += `Duration: ${powerup.getDuration()} <br>`;
             debugString += `Timer: ${powerup.timer} <br>`;
         }
-
 
         this.mainMenu.updateDebugString(debugString);
     }
