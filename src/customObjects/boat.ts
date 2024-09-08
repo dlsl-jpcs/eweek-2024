@@ -98,6 +98,8 @@ export class Boat extends Entity {
     gameLogic!: GameLogic;
 
     controlsEnabled: boolean = false;
+    onGround: boolean = false;
+    canJump: boolean = false;
 
     mainMenu!: MainMenu;
 
@@ -172,15 +174,13 @@ export class Boat extends Entity {
             if (key === "y") {
                 this.velocity.y = 3;
             }
-
-            if (key === "h") {
-                const speedup = this.engine.instantiate(Speedup);
-                setTimeout(() => {
-                    speedup.onTrigger();
-                }, 20);
-            }
         });
 
+
+        // when the user taps or clicks, jump
+        window.addEventListener("click", () => {
+            this.jump();
+        });
 
         // control the boat with device tilt, use devicemotion
         window.addEventListener("devicemotion", (event) => {
@@ -221,11 +221,20 @@ export class Boat extends Entity {
         this.gameLogic.removeSpeedModifier();
     }
 
+    setCanJump(canJump: boolean) {
+        this.canJump = canJump;
+    }
 
+    jump() {
+        if (!this.canJump || !this.controlsEnabled || this.velocity.y > 0) {
+            return;
+        }
+
+        this.velocity.y = 3;
+    }
 
     override start(): void {
         this.gameLogic = this.engine.findEntityByTag("GameLogic") as GameLogic;
-
         this.mainMenu = this.engine.findEntityByTag("mainMenu") as MainMenu;
     }
 
