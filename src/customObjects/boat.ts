@@ -116,6 +116,14 @@ export class Boat extends Entity {
         boat.position.y = -100;
         boat.position.x = -10;
 
+        // find children named "boat"
+        boat.traverse((child) => {
+            if (child.name === "FLAG") {
+                const mesh = child as THREE.Mesh;
+                const material = mesh.material as THREE.MeshStandardMaterial;
+            }
+        });
+
         const scale = document.documentElement.clientWidth / 84;
         this.scale = Math.min(scale, 10);
         boat.scale.set(this.scale,
@@ -201,6 +209,11 @@ export class Boat extends Entity {
         this.collisionBox = box;
 
         this.mesh.add(box);
+    }
+
+    public reset() {
+        this.mesh.position.set(-100, 100, 0);
+        this.velocity = new THREE.Vector3(0, 0, 0);
     }
 
 
@@ -300,6 +313,21 @@ export class Boat extends Entity {
     updateGravity() {
         this.velocity.y -= gravity;
         this.mesh.position.add(this.velocity);
+
+        const lowerBound = -380;
+        const upperBound = 380;
+
+        if (this.mesh.position.z < lowerBound) {
+            this.mesh.position.z = lowerBound;
+            this.velocity.z = 0;
+        }
+
+        if (this.mesh.position.z > upperBound) {
+            this.mesh.position.z = upperBound;
+            console.log("upper bound");
+            this.velocity.z = 0;
+        }
+
 
         if (this.mesh.position.y < 0) {
             this.mesh.position.y = 0;

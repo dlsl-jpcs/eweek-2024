@@ -2,7 +2,7 @@ import { LoadingManager } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 
 
-export const SAILBOAT = "sailboat.glb";
+export const SAILBOAT = "test.glb";
 export const ICEBERG = "iceberg.glb";
 export const ISLAND = "island.glb";
 export const DOLPHIN = "dolphin.glb";

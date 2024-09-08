@@ -120,7 +120,7 @@ export class GameLogic extends Entity {
             const obstacle = this.engine.instantiate(Obstacle);
             // iceberg.object.position.set(-300, 0, 0)
 
-            const width = this.sea.getWidth() / 2;
+            const width = this.sea.getWidth() / 2 - 200;
             const lowerBound = -width;
             const upperBound = width;
 
@@ -204,11 +204,16 @@ export class GameLogic extends Entity {
                 obstacle.destroy();
             }
 
+            const powerups = this.engine.findEntitiesByType(Powerup);
+            for (const powerup of powerups) {
+                powerup.destroy();
+            }
+
             this.obstacleTimer = 0;
             this.timer = 0;
-
             this.currentScore = 0;
-
+            this.player.enableControls();
+            this.player.reset();
 
             this.sea.setSpeed(this.getSpeed());
         } else if (state === GameState.OVER) {
@@ -247,6 +252,12 @@ export class GameLogic extends Entity {
         debugString += `Speed: ${this.getSpeed()}<br>`;
         debugString += `Current Score: ${this.currentScore}<br>`;
         debugString += `High Score: ${this.getPlayerData().top_score}<br><br>`;
+
+        debugString += `[Player] <br>`;
+        debugString += `Pos x: ${this.player.object.position.x}<br>`;
+        debugString += `Pos y: ${this.player.object.position.y}<br>`;
+        debugString += `Pos z: ${this.player.object.position.z}<br>`;
+        debugString += `<br>`;
 
         debugString += `Player First Name: ${this.getPlayerData().username}<br>`;
         debugString += `Player Name: ${this.getPlayerData().name}<br>`;

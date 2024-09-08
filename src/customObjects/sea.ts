@@ -27,7 +27,7 @@ export class Sea extends Entity {
         super("sea");
 
 
-        const height = 800;
+        const height = 1200;
 
         var geom = new THREE.CylinderGeometry(
             600 /** radius top */,
