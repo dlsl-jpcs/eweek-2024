@@ -97,7 +97,12 @@ export async function tokenCheck(): Promise<PlayerData> {
 
     return axios.post(SERVER_URL + "/api/v1/player/checkToken", {}, config)
         .then((response) => {
+
             const data = response.data as Response;
+            if (data.status === "invalid") {
+                throw new Error("Invalid Token");
+            }
+
             let playerData: PlayerData = {
                 id: data.user_data.player_id,
                 username: data.user_data.username,

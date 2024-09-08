@@ -169,7 +169,14 @@ export class GameLogic extends Entity {
             return true;
         }
 
-        const result = await tokenCheck().catch(() => null);
+
+        const result = await tokenCheck().catch((e) => {
+            console.log("Error occured while checking token", e);
+            return null;
+        });
+
+        console.log(result);
+
         if (result) {
             this.playerData = result;
             return true;
