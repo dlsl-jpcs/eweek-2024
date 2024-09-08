@@ -52,11 +52,21 @@ export class Speedup extends Powerup {
 
         // gradually increase the speed in a span of 3 seconds
         const interval = setInterval(() => {
-            speed += 0.1;
+            speed += 0.3;
             if (speed >= currentSpeed + 1) {
                 clearInterval(interval);
             }
         }, 100);
+
+        // increase fov
+        const fovInterval = setInterval(() => {
+            this.engine.getCamera().fov += 1;
+            this.engine.getCamera().updateProjectionMatrix();
+
+            if (this.engine.getCamera().fov >= 90) {
+                clearInterval(fovInterval);
+            }
+        }, 20);
 
         setTimeout(() => {
             const interval = setInterval(() => {
@@ -66,6 +76,15 @@ export class Speedup extends Powerup {
                     this.gameLogic.removeSpeedModifier();
                 }
             }, 100);
+
+            const fovInterval = setInterval(() => {
+                this.engine.getCamera().fov -= 1;
+                this.engine.getCamera().updateProjectionMatrix();
+
+                if (this.engine.getCamera().fov <= 50) {
+                    clearInterval(fovInterval);
+                }
+            }, 20);
         }, 3000);
     }
 }

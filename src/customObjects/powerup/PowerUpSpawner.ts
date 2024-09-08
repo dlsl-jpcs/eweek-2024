@@ -45,9 +45,7 @@ export class PowerUpSpawner extends Entity {
     spawnPowerup() {
 
         const powerupType = this.getRandomPowerup();
-        const powerup = this.engine.instantiate(powerupType);
-
-        console.log(this.engine.getEntities());
+        this.engine.instantiate(powerupType);
     }
 }
 
