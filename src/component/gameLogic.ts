@@ -96,6 +96,11 @@ export class GameLogic extends Entity {
 
             this.sea.setSpeed(this.getSpeed());
 
+            // decrease obstacle spawn rate but very slowly
+            if (this.obstacleSpawnRate > 1.4) {
+                this.obstacleSpawnRate -= 0.000001;
+            }
+
             // spawn obstacles
             this.spawnObstacle(deltaTime);
         }
@@ -120,9 +125,9 @@ export class GameLogic extends Entity {
             const obstacle = this.engine.instantiate(Obstacle);
             // iceberg.object.position.set(-300, 0, 0)
 
-            const width = this.sea.getWidth() / 2 - 200;
-            const lowerBound = -width;
-            const upperBound = width;
+
+            const lowerBound = -380;
+            const upperBound = 380;
 
             const randomZ = Math.random() * (upperBound - lowerBound) + lowerBound;
             obstacle.mesh.position.z = randomZ;
@@ -269,7 +274,6 @@ export class GameLogic extends Entity {
 
         debugString += `[Power Ups] <br>`
         const powerups = this.engine.findEntitiesByType(Powerup);
-        const powerupSpawner = this.engine.findEntityByTag("PowerUpSpawner")!;
         debugString += `Spawned Powerups: ${powerups.length}<br>`;
 
         debugString += `<br>`;

@@ -24,14 +24,6 @@ export class PowerUpSpawner extends Entity {
         super("PowerUpSpawner");
 
         this.object = new THREE.Object3D();
-
-        window.onkeyup = (e) => {
-            if (e.key === "p") {
-                this.spawnPowerup();
-            }
-        }
-
-
     }
 
     getRandomPowerup(): new (...args: any) => Powerup {

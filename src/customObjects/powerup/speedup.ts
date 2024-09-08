@@ -56,11 +56,9 @@ export class Speedup extends Powerup {
         if (this.timer >= this.getDuration()) {
             this.gameLogic.removeSpeedModifier();
 
-            this.fov = Math.max(this.fov - 1, 50);
+            this.fov = Math.max(this.fov - 0.8, 50);
             this.engine.getCamera().fov = this.fov;
             this.engine.getCamera().updateProjectionMatrix();
-
-            console.log(this.fov);
 
             if (this.fov <= 50) {
                 this.destroy();
