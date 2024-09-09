@@ -219,6 +219,44 @@ export class Boat extends Entity {
         this.collisionBox = box;
 
         this.mesh.add(box);
+
+        this.boatMesh.add(
+            new THREE.AxesHelper(100),
+        )
+
+
+        setTimeout(() => {
+            const shadowLight = new THREE.PointLight(0xff5a00, 20);
+
+            // // Set the direction of the light  
+            // shadowLight.position.set(150,
+            //     350,
+            //     350);
+            shadowLight.position.y = 0;
+            shadowLight.decay = 1;
+
+            // Allow shadow casting 
+            shadowLight.castShadow = true;
+
+            shadowLight.shadow.camera.near = 1;
+            shadowLight.shadow.camera.far = 1000;
+
+            // define the resolution of the shadow; the higher the better, 
+            // but also the more expensive and less performant
+            shadowLight.shadow.mapSize.width = 2048;
+            shadowLight.shadow.mapSize.height = 2048;
+
+            // this.engine.getCurrentScene().add(shadowLight);
+            this.boatMesh.add(shadowLight);
+            this.boatMesh.add(new THREE.PointLightHelper(shadowLight, 100))
+
+            // set position of camera to the light for debugging
+            // const camera = this.engine.getCamera();
+            // camera.position.set(150, 350, 350);
+            // camera.lookAt(0, 0, 0);
+        }, 1000);
+
+
     }
 
     public reset() {
@@ -284,14 +322,14 @@ export class Boat extends Entity {
 
 
 
-    update(_deltaTime: number): void { 
+    update(_deltaTime: number): void {
 
         this.updateRotation();
         this.updateCollision();
         this.updateGravity(_deltaTime);
         this.naturalCorrection();
 
-        this.updateCamera();
+        // this.updateCamera();
 
         for (const powerup of this.activePowerups) {
             if (powerup.isDestroyed()) {
@@ -401,8 +439,7 @@ export class Boat extends Entity {
 
     updateGravity(deltaTime: number) {
 
-        if (!this.isFlying)
-        {
+        if (!this.isFlying) {
             this.velocity.y -= gravity;
         }
 
@@ -429,8 +466,8 @@ export class Boat extends Entity {
         }
 
         const ray = new THREE.Raycaster(
-        this.mesh.position,
-        new THREE.Vector3(0, -1, 0),
+            this.mesh.position,
+            new THREE.Vector3(0, -1, 0),
         );
 
         const sea = this.engine.findEntityByTag("sea")!;

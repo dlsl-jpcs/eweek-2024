@@ -9,6 +9,7 @@ import { MainMenu } from './component/mainMenu';
 
 import { preloadAssets, registerOnLoadCallback, registerOnProgressCallback } from './utils/resource';
 import { PowerUpSpawner } from './customObjects/powerup/PowerUpSpawner';
+import { DayNightCycle } from './component/dayNightCycle';
 
 
 async function main() {
@@ -55,6 +56,7 @@ function initEngine() {
 
 
   engine.instantiate(PowerUpSpawner);
+  engine.instantiate(DayNightCycle);
 
 
   engine.init();
