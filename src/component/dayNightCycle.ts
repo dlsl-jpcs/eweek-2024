@@ -49,13 +49,19 @@ export class DayNightCycle extends Entity {
 
         } else if (time < 0.5) {
             light = 0.5;
-            this.world.style.background = interpolateColor(sunrise, sunset, time * 4 - 1).getStyle();
+            const color = interpolateColor(sunrise, sunset, time * 4 - 1);
+            this.world.style.background = color.getStyle();
+            shadowLight.color = color
         } else if (time < 0.75) {
             light = 0.5;
-            this.world.style.background = interpolateColor(sunset, dusk, time * 4 - 2).getStyle();
+            const color = interpolateColor(sunset, dusk, time * 4 - 2)
+            this.world.style.background = color.getStyle();
+            shadowLight.color = color
         } else {
             light = 1;
-            this.world.style.background = interpolateColor(dusk, dawn, time * 4 - 3).getStyle();
+            const color = interpolateColor(dusk, dawn, time * 4 - 3);
+            this.world.style.background = color.getStyle();
+            shadowLight.color = color
         }
     }
 }

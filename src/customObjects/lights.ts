@@ -29,7 +29,7 @@ export function setupLighting(engine: Engine) {
     // A directional light shines from a specific direction. 
     // It acts like the sun, that means that all the rays produced are parallel. 
     shadowLight = new THREE.DirectionalLight(0xffffff,
-        20);
+        15);
 
     // Set the direction of the light  
     shadowLight.position.set(150,
