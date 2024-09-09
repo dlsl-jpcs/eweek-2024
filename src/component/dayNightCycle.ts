@@ -52,7 +52,7 @@ export class DayNightCycle extends Entity {
             const color = interpolateColor(sunrise, sunset, time * 4 - 1);
             this.world.style.background = color.getStyle();
             shadowLight.color = color
-        } else if (time < 0.75) {
+        } else if (time < 0.6) {
             light = 0.5;
             const color = interpolateColor(sunset, dusk, time * 4 - 2)
             this.world.style.background = color.getStyle();

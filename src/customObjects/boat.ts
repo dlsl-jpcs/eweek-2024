@@ -187,9 +187,26 @@ export class Boat extends Entity {
         });
 
 
-        // when the user taps or clicks, jump
-        window.addEventListener("click", () => {
-            this.jump();
+
+        // control the boat with hold, use onpointerdown and onpointerup
+        window.addEventListener("pointerdown", (event) => {
+            if (!this.controlsEnabled) {
+                return;
+            }
+
+            if (event.x < window.innerWidth / 2) {
+                this.velocity.z = 250;
+            } else {
+                this.velocity.z = -250;
+            }
+        });
+
+        window.addEventListener("pointerup", (event) => {
+            if (!this.controlsEnabled) {
+                return;
+            }
+
+            this.velocity.z = 0;
         });
 
         // control the boat with device tilt, use devicemotion
@@ -199,7 +216,14 @@ export class Boat extends Entity {
             }
 
             const acceleration = event.accelerationIncludingGravity;
-            this.velocity.z = -(acceleration?.x || 0) / 2;
+            const tilt = acceleration?.x || 0;
+            if (tilt < -1) {
+                this.velocity.z = 250;
+            } else if (tilt > 1) {
+                this.velocity.z = -250;
+            } else {
+                this.velocity.z = 0
+            }
         });
 
 
