@@ -1,6 +1,6 @@
 import { Color } from "three";
 import { Entity } from "../engine/engine";
-import { hemisphereLight, shadowLight } from "../customObjects/lights";
+import { shadowLight } from "../customObjects/lights";
 
 export class DayNightCycle extends Entity {
 
@@ -27,9 +27,6 @@ export class DayNightCycle extends Entity {
 
     private updateDayNightCycle(): void {
         let time = this.timer / this.duration;
-        let light = 1;
-
-
 
         const sunrise = new Color("#FDA26B")
         const sunset = new Color("#FF4D4D")
@@ -42,23 +39,18 @@ export class DayNightCycle extends Entity {
         // interpolate the color of the sky,
         // between the start and end (should end with start again) colors
         if (time < 0.25) {
-            light = 1;
             const color = interpolateColor(dawn, sunrise, time * 4);
             this.world.style.background = color.getStyle();
             shadowLight.color = color;
-
         } else if (time < 0.5) {
-            light = 0.5;
             const color = interpolateColor(sunrise, sunset, time * 4 - 1);
             this.world.style.background = color.getStyle();
             shadowLight.color = color
         } else if (time < 0.6) {
-            light = 0.5;
             const color = interpolateColor(sunset, dusk, time * 4 - 2)
             this.world.style.background = color.getStyle();
             shadowLight.color = color
         } else {
-            light = 1;
             const color = interpolateColor(dusk, dawn, time * 4 - 3);
             this.world.style.background = color.getStyle();
             shadowLight.color = color

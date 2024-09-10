@@ -201,7 +201,7 @@ export class Boat extends Entity {
             }
         });
 
-        window.addEventListener("pointerup", (event) => {
+        window.addEventListener("pointerup", () => {
             if (!this.controlsEnabled) {
                 return;
             }
