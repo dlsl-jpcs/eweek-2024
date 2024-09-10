@@ -114,7 +114,10 @@ export class MainMenu extends Entity {
         {
             if(document.visibilityState == 'hidden') 
             {
-                this.gameLogic.setGameState(GameState.OVER);
+                if (this.gameLogic && this.gameLogic.getGameState() === GameState.PLAYING) {
+                    this.gameLogic.setGameState(GameState.OVER);
+                    console.log("Game Over - VS Hidden");
+                }
             }
         });
     }

@@ -85,6 +85,15 @@ export class GameLogic extends Entity {
 
     override update(deltaTime: number): void {
         if (this.gameState === GameState.PLAYING) {
+
+            if (!document.hasFocus()) {
+            
+                this.setGameState(GameState.OVER);
+
+                console.log("Game Over - FCS Lost");
+                return;
+            }
+
             // increment timer per second
             this.timer += deltaTime;
             // update the current score

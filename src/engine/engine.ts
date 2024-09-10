@@ -225,12 +225,8 @@ export default class Engine {
     }
 
     update(deltaTime: number) {
-        if (!document.hasFocus()) {
-            var gameLogic = this.findEntityByTag("GameLogic") as GameLogic;
-            gameLogic.setGameState(GameState.OVER);
-            return;
-        }
 
+       
         this.entities.forEach(entity => {
             if (!entity.isAlive) {
                 entity.start();
