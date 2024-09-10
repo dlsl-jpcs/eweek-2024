@@ -14,6 +14,7 @@ import { StatusEffectUi } from './component/statusEffect';
 
 
 async function main() {
+
   const loadingScreen = document.getElementById("loading_screen");
 
   registerOnLoadCallback(() => {

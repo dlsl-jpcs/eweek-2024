@@ -85,6 +85,31 @@ export function isDebugModeOn(): boolean {
   return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 }
 
+
+export function isMaintenanceModeOn(): boolean {
+
+  const isMaintenance = true;
+
+  if (!isMaintenance)
+      return false;
+
+  return isMaintenance;
+}
+
+export function allowEntryOnMaintenance(): boolean {
+   
+    const param = new URLSearchParams(window.location.search).get('maintenance');
+    if (!param) {
+        return false;
+    }
+
+    if (param === 'true') {
+        return true;    
+    }
+
+    return false;
+}
+
 export function getServerURL() {
   return isDebugModeOn() ? 'http://localhost:3000' : 'https://eweek-api.tyronscott.me';
 }

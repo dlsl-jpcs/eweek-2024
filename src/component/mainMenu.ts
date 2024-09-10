@@ -1,6 +1,6 @@
 import { Boat } from "../customObjects/boat";
 import { Entity } from "../engine/engine";
-import { requestOrientationPermissions } from "../utils";
+import { allowEntryOnMaintenance, isMaintenanceModeOn, requestOrientationPermissions } from "../utils";
 import { GameLogic, GameState } from "./gameLogic";
 
 export class MainMenu extends Entity {
@@ -84,6 +84,15 @@ export class MainMenu extends Entity {
         this.registerSigSubmitListener();
 
         this.showPermissionsModal();
+
+        if (isMaintenanceModeOn()) {
+            if (!allowEntryOnMaintenance())
+            {
+                let doc = document.querySelector('html')!;
+                doc.innerHTML = "<h4 style=\"padding: 0; margin: 0;\">Paddle Frenzy is currently under maintenance for fixes and improvements.</h4>";
+                doc.innerHTML += "<h5 style=\"padding: 0; margin: 0;\">We deeply apologize for the downtime.<br>-JPCS</h5>";
+            }
+        }
     }
 
     update(_deltaTime: number): void {
