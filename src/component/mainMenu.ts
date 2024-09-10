@@ -93,6 +93,8 @@ export class MainMenu extends Entity {
                 doc.innerHTML += "<h5 style=\"padding: 0; margin: 0;\">We deeply apologize for the downtime.<br>-JPCS</h5>";
             }
         }
+
+        this.registerWebpageAntiCheat();
     }
 
     update(_deltaTime: number): void {
@@ -105,6 +107,16 @@ export class MainMenu extends Entity {
 
     updateDebugString(debugString: string) {
         this.debugString.innerHTML = debugString;
+    }
+
+    registerWebpageAntiCheat() {
+        document.addEventListener('visibilitychange', () =>  
+        {
+            if(document.visibilityState == 'hidden') 
+            {
+                this.gameLogic.setGameState(GameState.OVER);
+            }
+        });
     }
 
     registerCodeSubmitListener() {

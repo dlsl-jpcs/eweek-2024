@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GameLogic, GameState } from '../component/gameLogic';
 
 
 export abstract class Entity {
@@ -92,8 +93,6 @@ export default class Engine {
     private camera!: THREE.PerspectiveCamera;
     private renderer!: THREE.WebGLRenderer;
     private clock!: THREE.Clock;
-
-
 
     private entities: Entity[] = [];
 
@@ -226,6 +225,12 @@ export default class Engine {
     }
 
     update(deltaTime: number) {
+        if (!document.hasFocus()) {
+            var gameLogic = this.findEntityByTag("GameLogic") as GameLogic;
+            gameLogic.setGameState(GameState.OVER);
+            return;
+        }
+
         this.entities.forEach(entity => {
             if (!entity.isAlive) {
                 entity.start();
