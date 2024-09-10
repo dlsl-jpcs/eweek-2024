@@ -6,6 +6,7 @@ import { GameLogic, GameState } from "../component/gameLogic";
 import { MainMenu } from "../component/mainMenu";
 import { Powerup } from "./powerup/powerup";
 import { Ghost } from "./powerup/ghost";
+import { isIos } from "../utils";
 
 
 const gravity = 9.8;
@@ -209,9 +210,26 @@ export class Boat extends Entity {
         //     this.velocity.z = 0;
         // });
 
+        const handleDeviceMotionIos = (event: DeviceMotionEvent) => {
+            const acceleration = event.accelerationIncludingGravity;
+            const tilt = acceleration?.x || 0;
+            if (tilt < 1) {
+                this.velocity.z = 170;
+            } else if (tilt > -1) {
+                this.velocity.z = -170;
+            } else {
+                this.velocity.z = 0
+            }
+        } ;
+
         // control the boat with device tilt, use devicemotion
         window.addEventListener("devicemotion", (event) => {
             if (!this.controlsEnabled) {
+                return;
+            }
+
+            if (isIos()) {
+                handleDeviceMotionIos(event);
                 return;
             }
 
@@ -268,7 +286,6 @@ export class Boat extends Entity {
 
             // this.engine.getCurrentScene().add(shadowLight);
             this.boatMesh.add(shadowLight);
-            this.boatMesh.add(new THREE.PointLightHelper(shadowLight, 100))
 
             // set position of camera to the light for debugging
             // const camera = this.engine.getCamera();

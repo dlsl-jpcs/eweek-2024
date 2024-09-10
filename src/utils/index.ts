@@ -88,3 +88,7 @@ export function isDebugModeOn(): boolean {
 export function getServerURL() {
   return isDebugModeOn() ? 'http://localhost:3000' : 'https://eweek-api.tyronscott.me';
 }
+
+export function isIos() {
+  return isIos;
+}
