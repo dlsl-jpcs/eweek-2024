@@ -1,6 +1,4 @@
 import * as THREE from 'three';
-import { GameLogic, GameState } from '../component/gameLogic';
-
 
 export abstract class Entity {
 
