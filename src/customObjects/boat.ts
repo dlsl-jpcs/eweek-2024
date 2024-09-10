@@ -218,9 +218,9 @@ export class Boat extends Entity {
             const acceleration = event.accelerationIncludingGravity;
             const tilt = acceleration?.x || 0;
             if (tilt < -1) {
-                this.velocity.z = 250;
+                this.velocity.z = -200;
             } else if (tilt > 1) {
-                this.velocity.z = -250;
+                this.velocity.z = 200;
             } else {
                 this.velocity.z = 0
             }
@@ -243,10 +243,6 @@ export class Boat extends Entity {
         this.collisionBox = box;
 
         this.mesh.add(box);
-
-        this.boatMesh.add(
-            new THREE.AxesHelper(100),
-        )
 
 
         setTimeout(() => {
