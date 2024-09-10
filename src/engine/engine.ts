@@ -233,6 +233,10 @@ export default class Engine {
             }
         });
         this.entities.forEach(entity => {
+            // if we are in the background, we don't need to update
+            if (!document.hasFocus()) {
+                return;
+            }
             entity.update(deltaTime);
         });
     }
