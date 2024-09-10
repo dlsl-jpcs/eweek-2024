@@ -85,12 +85,9 @@ export class MainMenu extends Entity {
 
         this.showPermissionsModal();
 
-        if (isMaintenanceModeOn()) {
-            if (!allowEntryOnMaintenance())
-            {
-                let doc = document.querySelector('html')!;
-                doc.innerHTML = "<h4 style=\"padding: 0; margin: 0;\">Paddle Frenzy is currently under maintenance for fixes and improvements.</h4>";
-                doc.innerHTML += "<h5 style=\"padding: 0; margin: 0;\">We deeply apologize for the downtime.<br>-JPCS</h5>";
+        if (isMaintenanceModeOn() || true) {
+            if (!allowEntryOnMaintenance()) {
+                window.location.href = "maintenance.html";
             }
         }
 
@@ -110,10 +107,8 @@ export class MainMenu extends Entity {
     }
 
     registerWebpageAntiCheat() {
-        document.addEventListener('visibilitychange', () =>  
-        {
-            if(document.visibilityState == 'hidden') 
-            {
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState == 'hidden') {
                 if (this.gameLogic && this.gameLogic.getGameState() === GameState.PLAYING) {
                     this.gameLogic.setGameState(GameState.OVER);
                     console.log("Game Over - VS Hidden");
@@ -148,7 +143,7 @@ export class MainMenu extends Entity {
                 console.log("Player has signed");
                 this.authDone();
                 this.registerGameStartClickListener();
-               
+
             }
             else {
                 this.showSigError("Invalid Signature!");
@@ -165,7 +160,7 @@ export class MainMenu extends Entity {
 
         // wait so clicking menu won't start game once auth done
         setTimeout(() => {
-            document.addEventListener("click", () => { 
+            document.addEventListener("click", () => {
 
                 let boat = this.engine.findEntityByTag("player")! as Boat;
                 if (boat) {
@@ -186,14 +181,13 @@ export class MainMenu extends Entity {
 
     }
 
-    registerGameStartClickListener()
-    {
+    registerGameStartClickListener() {
         if (this.isTapToPlayRegistered)
             return;
 
         this.isTapToPlayRegistered = true;
 
-        document.addEventListener("click", () => { 
+        document.addEventListener("click", () => {
 
             let boat = this.engine.findEntityByTag("player")! as Boat;
             if (boat) {
@@ -211,15 +205,15 @@ export class MainMenu extends Entity {
                 this.vignette.style.opacity = "0";
             }
         });
-    } 
+    }
 
     unregisterGameStartClickListener() {
-        
+
         if (!this.isTapToPlayRegistered)
             return;
 
         this.isTapToPlayRegistered = false;
-        document.removeEventListener("click", () => {});
+        document.removeEventListener("click", () => { });
     }
 
     showAuthModal() {
@@ -259,8 +253,7 @@ export class MainMenu extends Entity {
         this.lastScoreLabel.style.display = "block";
         this.lastScoreLabel.innerHTML = "Your Score: " + Math.round(this.gameLogic.getCurrentScore());
 
-        if (Math.round(this.gameLogic.getCurrentScore()) > this.gameLogic.getPlayerData().top_score)
-        {   
+        if (Math.round(this.gameLogic.getCurrentScore()) > this.gameLogic.getPlayerData().top_score) {
             this.newRecordLabel.style.display = "block";
         }
     }
