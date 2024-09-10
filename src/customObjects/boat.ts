@@ -7,6 +7,7 @@ import { MainMenu } from "../component/mainMenu";
 import { Powerup } from "./powerup/powerup";
 import { Ghost } from "./powerup/ghost";
 import { isIos } from "../utils";
+import { Jump } from "./powerup/jump";
 
 
 const gravity = 9.8;
@@ -180,7 +181,7 @@ export class Boat extends Entity {
             }
 
             if (key === "p") {
-                const powerup = this.engine.instantiate(Ghost);
+                const powerup = this.engine.instantiate(Jump);
                 setTimeout(() => {
                     this.collideWithPowerup(powerup);
                 }, 10);
@@ -213,10 +214,6 @@ export class Boat extends Entity {
 
         // on click, jump
         window.addEventListener("click", () => {
-            if (!this.controlsEnabled) {
-                return;
-            }
-
             this.jump();
         });
 
@@ -224,9 +221,9 @@ export class Boat extends Entity {
         const handleDeviceMotionIos = (event: DeviceMotionEvent) => {
             const acceleration = event.accelerationIncludingGravity;
             const tilt = acceleration?.x || 0;
-            if (tilt < 1) {
+            if (tilt < 10) {
                 this.velocity.z = 170;
-            } else if (tilt > -1) {
+            } else if (tilt > -10) {
                 this.velocity.z = -170;
             } else {
                 this.velocity.z = 0
@@ -323,11 +320,15 @@ export class Boat extends Entity {
     }
 
     jump() {
-        if (!this.canJump || !this.controlsEnabled || this.velocity.y > 0) {
+        if (!this.controlsEnabled) {
             return;
         }
 
-        this.velocity.y = 60;
+        if (!this.canJump) {
+            return;
+        }
+
+        this.velocity.y = 440;
     }
 
     setGhost(isGhost: boolean) {

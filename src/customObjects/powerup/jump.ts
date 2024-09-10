@@ -46,6 +46,7 @@ export class Jump extends Powerup {
 
         if (this.timer >= this.getDuration()) {
             this.destroy();
+            this.player.setCanJump(false);
         }
     }
 
