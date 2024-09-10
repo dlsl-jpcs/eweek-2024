@@ -5,7 +5,6 @@ import { Obstacle as Obstacle } from "./obstacle";
 import { GameLogic, GameState } from "../component/gameLogic";
 import { MainMenu } from "../component/mainMenu";
 import { Powerup } from "./powerup/powerup";
-import { Ghost } from "./powerup/ghost";
 import { isIos } from "../utils";
 import { Jump } from "./powerup/jump";
 
