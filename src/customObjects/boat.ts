@@ -197,9 +197,9 @@ export class Boat extends Entity {
             const acceleration = event.accelerationIncludingGravity;
             const tilt = acceleration?.x || 0;
             if (tilt > 1) {
-                this.velocity.z = 170;
-            } else if (tilt < -1) {
                 this.velocity.z = -170;
+            } else if (tilt < -1) {
+                this.velocity.z = 170;
             } else {
                 this.velocity.z = 0
             }
