@@ -127,6 +127,8 @@ export async function codeCheck(code: string): Promise<boolean> {
         return true;
     }
 
+    code = code.toUpperCase();
+
     interface Response {
         status: string,
         message: string,
