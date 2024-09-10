@@ -85,7 +85,7 @@ export class MainMenu extends Entity {
 
         this.showPermissionsModal();
 
-        if (isMaintenanceModeOn() || true) {
+        if (isMaintenanceModeOn()) {
             if (!allowEntryOnMaintenance()) {
                 window.location.href = "maintenance.html";
             }
