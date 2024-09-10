@@ -189,25 +189,25 @@ export class Boat extends Entity {
 
 
         // control the boat with hold, use onpointerdown and onpointerup
-        window.addEventListener("pointerdown", (event) => {
-            if (!this.controlsEnabled) {
-                return;
-            }
+        // window.addEventListener("pointerdown", (event) => {
+        //     if (!this.controlsEnabled) {
+        //         return;
+        //     }
 
-            if (event.x < window.innerWidth / 2) {
-                this.velocity.z = 250;
-            } else {
-                this.velocity.z = -250;
-            }
-        });
+        //     if (event.x < window.innerWidth / 2) {
+        //         this.velocity.z = 250;
+        //     } else {
+        //         this.velocity.z = -250;
+        //     }
+        // });
 
-        window.addEventListener("pointerup", () => {
-            if (!this.controlsEnabled) {
-                return;
-            }
+        // window.addEventListener("pointerup", () => {
+        //     if (!this.controlsEnabled) {
+        //         return;
+        //     }
 
-            this.velocity.z = 0;
-        });
+        //     this.velocity.z = 0;
+        // });
 
         // control the boat with device tilt, use devicemotion
         window.addEventListener("devicemotion", (event) => {
