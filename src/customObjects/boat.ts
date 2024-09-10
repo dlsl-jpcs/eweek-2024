@@ -210,6 +210,17 @@ export class Boat extends Entity {
         //     this.velocity.z = 0;
         // });
 
+
+        // on click, jump
+        window.addEventListener("click", () => {
+            if (!this.controlsEnabled) {
+                return;
+            }
+
+            this.jump();
+        });
+
+
         const handleDeviceMotionIos = (event: DeviceMotionEvent) => {
             const acceleration = event.accelerationIncludingGravity;
             const tilt = acceleration?.x || 0;
@@ -472,6 +483,10 @@ export class Boat extends Entity {
         }
 
         return null;
+    }
+
+    getActivePowerups() {
+        return this.activePowerups;
     }
 
     updateGravity(deltaTime: number) {

@@ -522,3 +522,91 @@ body {
   animation: blinker 0.5s linear infinite;
   display: none;
 }
+
+
+
+
+
+
+
+
+#ingame_ui {
+  width: 100vw;
+  height: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+#status-effect {
+  left: 100;
+  min-width: 220px;
+  margin-left: auto;
+}
+
+.status-effect-item {
+  width: 100%;
+  display: flex;
+  
+  justify-content: start;
+  align-items: center;
+
+  /* add border */
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(74, 20, 20);
+  /* add rounded corners */
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-right: 10px;
+  
+  background-color: brown;
+  color: white;
+ 
+  padding-top: .5rem;
+  flex-direction: column;
+
+  align-items: start;
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  /* animation */
+  animation: statusEffectSlide 0.5s ease-in;
+}
+
+.status-effect-item p {
+  margin-left: 0.5rem;
+  margin-right: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding: 0px;
+}
+
+/* animate visibility of status effect item, move from right to left */
+@keyframes statusEffectSlide {
+    0% {
+        transform: translateX(50px);
+        opacity: 0;
+    }
+
+    30% {
+  
+    }
+
+    100% {
+      opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.status-effect-text {
+  margin-left: 0.5rem;
+}
+
+
+/* place at the bottom of the parent */
+.loading-element {
+  background-color: red;
+  width: 100%;
+  height: 10px;
+  margin-top: .5rem;
+}

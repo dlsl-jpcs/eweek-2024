@@ -10,6 +10,7 @@ import { MainMenu } from './component/mainMenu';
 import { preloadAssets, registerOnLoadCallback, registerOnProgressCallback } from './utils/resource';
 import { PowerUpSpawner } from './customObjects/powerup/PowerUpSpawner';
 import { DayNightCycle } from './component/dayNightCycle';
+import { StatusEffectUi } from './component/statusEffect';
 
 
 async function main() {
@@ -57,6 +58,11 @@ function initEngine() {
 
   engine.instantiate(PowerUpSpawner);
   engine.instantiate(DayNightCycle);
+
+  setTimeout(() => {
+    engine.instantiate(StatusEffectUi);
+  }, 300);
+
 
 
   engine.init();
