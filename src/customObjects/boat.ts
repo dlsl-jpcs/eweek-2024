@@ -349,7 +349,7 @@ export class Boat extends Entity {
         this.updateGravity(_deltaTime);
         this.naturalCorrection();
 
-        // this.updateCamera();
+        this.updateCamera();
 
         for (const powerup of this.activePowerups) {
             if (powerup.isDestroyed()) {
