@@ -87,8 +87,8 @@ export function isDebugModeOn(): boolean {
 
 
 export function isMaintenanceModeOn(): boolean {
-
-  const isMaintenance = true;
+  
+  const isMaintenance = false;
 
   if (!isMaintenance)
       return false;

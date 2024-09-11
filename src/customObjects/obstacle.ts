@@ -8,7 +8,6 @@ export class Obstacle extends Entity {
 
     mesh: THREE.Object3D;
 
-
     private sea!: Sea;
     scale: number = 1;
 

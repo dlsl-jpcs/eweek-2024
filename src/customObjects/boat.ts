@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Entity } from "../engine/engine";
-import { getModel, SAILBOAT } from "../utils/resource";
+import {  getModel, SAILBOAT } from "../utils/resource";
 import { Obstacle as Obstacle } from "./obstacle";
 import { GameLogic, GameState } from "../component/gameLogic";
 import { MainMenu } from "../component/mainMenu";
@@ -93,6 +93,7 @@ export class Boat extends Entity {
     mesh: THREE.Object3D;
     boatMesh!: THREE.Object3D;
     collisionBox!: THREE.Box3Helper;
+    shadowLight!: THREE.PointLight;
 
     velocity: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
 
@@ -112,33 +113,16 @@ export class Boat extends Entity {
 
     scale: number = 1;
 
+    currentMesh: string = SAILBOAT;
+
     constructor() {
         super("player");
 
         this.mesh = new THREE.Object3D();
-        this.mesh.position.y = 100;
-        this.mesh.position.x = -100;
 
-        const boat = getModel(SAILBOAT).scene.clone();
-        boat.position.y = -100;
-        boat.position.x = -10;
+        this.changeMesh(SAILBOAT);
 
-        // find children named "boat"
-        // boat.traverse((child) => {
-        //     if (child.name === "FLAG") {
-        //         const mesh = child as THREE.Mesh;
-        //     }
-        // });
-
-        const scale = document.documentElement.clientWidth / 84;
-        this.scale = Math.min(scale, 10);
-        boat.scale.set(this.scale,
-            this.scale,
-            this.scale);
-        this.mesh.add(boat);
-
-        this.boatMesh = boat;
-        this.object = this.mesh;
+        const boat = this.boatMesh;
 
         // listen to window resize, so we can rescale the boat
         window.addEventListener("resize", () => {
@@ -176,7 +160,7 @@ export class Boat extends Entity {
             }
 
             if (key === "y") {
-                this.velocity.y = 445;
+                this.jump();
             }
 
             if (key === "p") {
@@ -185,6 +169,7 @@ export class Boat extends Entity {
                     this.collideWithPowerup(powerup);
                 }, 10);
             }
+
         });
 
         // on click, jump
@@ -192,7 +177,7 @@ export class Boat extends Entity {
             this.jump();
         });
 
-
+        // coffee: device motion is inverted on ios, no need to do other values @tyron
         const handleDeviceMotionIos = (event: DeviceMotionEvent) => {
             const acceleration = event.accelerationIncludingGravity;
             const tilt = acceleration?.x || 0;
@@ -226,25 +211,6 @@ export class Boat extends Entity {
                 this.velocity.z = 0
             }
         });
-
-
-
-
-        const collisionBox = new THREE.Box3().setFromObject(this.boatMesh);
-
-        // adjust the collision box, take into account the scale
-        collisionBox.min.z += 2 * this.scale;
-        collisionBox.max.z -= 2 * this.scale;
-
-        collisionBox.min.x += 1.2 * this.scale;
-        collisionBox.max.x -= 1.2 * this.scale;
-
-        const box = new THREE.Box3Helper(collisionBox);
-        box.visible = false;
-        this.collisionBox = box;
-
-        this.mesh.add(box);
-
 
         setTimeout(() => {
             const shadowLight = new THREE.PointLight(0xff5a00, 20);
@@ -290,6 +256,78 @@ export class Boat extends Entity {
         this.gameLogic.removeSpeedModifier();
     }
 
+    changeMesh(mesh: string) {
+
+        this.currentMesh = mesh;
+
+        this.mesh.remove(this.boatMesh);
+        this.mesh.remove(this.collisionBox);
+        this.mesh.remove(this.shadowLight);
+
+        this.mesh.position.y = 100;
+        this.mesh.position.x = -100;
+
+        const boat = getModel(mesh).scene.clone();
+        boat.position.y = -100;
+        boat.position.x = -10;
+
+        const scale = document.documentElement.clientWidth / 84;
+        this.scale = Math.min(scale, 10);
+        boat.scale.set(this.scale,
+            this.scale,
+            this.scale);
+        this.mesh.add(boat);
+
+        this.boatMesh = boat;
+        this.object = this.mesh;
+
+        const collisionBox = new THREE.Box3().setFromObject(this.boatMesh);
+
+        // adjust the collision box, take into account the scale
+        collisionBox.min.z += 2 * this.scale;
+        collisionBox.max.z -= 2 * this.scale;
+
+        collisionBox.min.x += 1.2 * this.scale;
+        collisionBox.max.x -= 1.2 * this.scale;
+
+        const box = new THREE.Box3Helper(collisionBox);
+        box.visible = false;
+        this.collisionBox = box;
+
+        this.mesh.add(box);
+
+        setTimeout(() => {
+            const shadowLight = new THREE.PointLight(0xff5a00, 20);
+
+            // // Set the direction of the light  
+            // shadowLight.position.set(150,
+            //     350,
+            //     350);
+            shadowLight.position.y = 0;
+            shadowLight.decay = 1;
+
+            // Allow shadow casting 
+            shadowLight.castShadow = true;
+
+            shadowLight.shadow.camera.near = 1;
+            shadowLight.shadow.camera.far = 1000;
+
+            // define the resolution of the shadow; the higher the better, 
+            // but also the more expensive and less performant
+            shadowLight.shadow.mapSize.width = 2048;
+            shadowLight.shadow.mapSize.height = 2048;
+
+            // this.engine.getCurrentScene().add(shadowLight);
+            this.boatMesh.add(shadowLight);
+            this.shadowLight = shadowLight;
+
+            // set position of camera to the light for debugging
+            // const camera = this.engine.getCamera();
+            // camera.position.set(150, 350, 350);
+            // camera.lookAt(0, 0, 0);
+        }, 1000);
+    }
+
     setCanJump(canJump: boolean) {
         this.canJump = canJump;
     }
@@ -300,6 +338,10 @@ export class Boat extends Entity {
         }
 
         if (!this.canJump) {
+            return;
+        }
+
+        if (this.mesh.position.y >= 250) {
             return;
         }
 
