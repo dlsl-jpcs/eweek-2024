@@ -41,7 +41,7 @@ async function main() {
   });
 
 
-  preloadAssets();
+  await preloadAssets();
 }
 
 function initEngine() {

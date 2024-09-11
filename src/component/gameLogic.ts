@@ -87,7 +87,7 @@ export class GameLogic extends Entity {
         if (this.gameState === GameState.PLAYING) {
 
             if (!document.hasFocus()) {
-            
+
                 this.setGameState(GameState.OVER);
 
                 console.log("Game Over - FCS Lost");
@@ -215,6 +215,8 @@ export class GameLogic extends Entity {
         return this.gameState;
     }
 
+    private startTime: number = 0;
+
     setGameState(state: GameState) {
         this.gameState = state;
 
@@ -237,18 +239,21 @@ export class GameLogic extends Entity {
             this.player.reset();
 
             this.sea.setSpeed(this.getSpeed());
+
+            this.startTime = Date.now();
         } else if (state === GameState.OVER) {
-            
+
             // call this before anything else
             this.mainMenu.showGameOver();
+            const elapsedTime = Date.now() - this.startTime;
+
 
             this.sea.setSpeed(0);
             this.player.disableControls();
-            
-            if (this.currentScore > this.getPlayerData().top_score) 
-            {
+
+            if (this.currentScore > this.getPlayerData().top_score) {
                 this.getPlayerData().top_score = this.currentScore;
-                updateTopScore(this.currentScore);
+                updateTopScore(this.currentScore, elapsedTime);
             }
         }
     }
@@ -274,7 +279,7 @@ export class GameLogic extends Entity {
             return;
 
         let debugString = `[Debug Logs]<br>`;
-        
+
         debugString += `Obstacles Spawned: ${this.obstacleSpawnedDebug}<br>`;
         debugString += `Obstacle Spawn Rate: ${this.obstacleSpawnRate}<br>`;
         debugString += `Obstacle Timer: ${this.obstacleTimer}<br>`;

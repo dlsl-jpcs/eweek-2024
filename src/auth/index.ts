@@ -197,7 +197,7 @@ export async function submitSignature(signatureBase64: string) {
         });
 }
 
-export async function updateTopScore(newScore: number) {
+export async function updateTopScore(newScore: number, elapsedTime: number) {
 
     interface Response {
         status: string,
@@ -205,11 +205,13 @@ export async function updateTopScore(newScore: number) {
     }
 
     interface Request {
-        score: number
+        score: number,
+        elapsedTime: number
     }
 
     const request: Request = {
-        score: Math.round(newScore)
+        score: Math.round(newScore),
+        elapsedTime: elapsedTime
     }
 
     const config: AxiosRequestConfig = {
