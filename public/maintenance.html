@@ -4,12 +4,14 @@
     <title>JPCS Maintenance :(</title>
     <style>
         body {
-            text-align: center;
-            padding: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
         h1 {
-            font-size: 50px;
+            font-size: 1.2rem;
         }
 
         body {
@@ -39,14 +41,34 @@
 
 <body>
     <article>
-        <h1>We’ll be back soon!</h1>
+        <h1>JPCS Paddle Frenzy has ended.</h1>
         <div>
-            <p>Sorry for the inconvenience but we’re performing some maintenance at the moment. If you need to you can
-                always <a href="mailto:jpcs@dlsl.edu.ph">contact us</a>, otherwise we’ll be back online shortly!</p>
-            <p>— tyron :D</p>
+            <p>E-Fest '24 has ended and our game comes with it. Thanks for all those people that supported our game, we really appreciate you.<br><br><b>JPCS Paddle Frenzy has been developed by-</b><br><br><b>Tyron Scott</b> - Worked on the Game Mechanics, 3D elements, and Overall Game/Visual Design.<br><b>Coffee</b> - Backend Work, Networking, API Routes, and Leaderboards.<br><b>Lebron</b> - UI Elements and The Paddle Frenzy Logo<br><br>If you got any inquiries, just <a href="mailto:jpcs@dlsl.edu.ph">contact us</a>!</p>
+            <p>— JPCS</p>
         </div>
     </article>
 
 </body>
+<script>
+     function getTopScores() {
+            console.log("Updating top scores..");
 
+            var status = '';
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://eweek-api.tyronscott.me/api/v1/player/getTopScores", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {  
+                var json = JSON.parse(xhr.responseText);
+
+                console.log(json);
+            }
+
+            xhr.send(JSON.stringify({
+                amount: 15
+            }));
+        };     
+
+        getTopScores();
+</script>
 </html>
